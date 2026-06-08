@@ -1,0 +1,262 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/kimi-k2.6",
+  "small_model": "opencode/deepseek-v4-flash",
+  "default_agent": "orchestrator-light",
+  "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:OPENCODE_API_KEY}"
+      }
+    },
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:OPENCODE_API_KEY}",
+        "baseURL": "https://opencode.ai/zen/v1"
+      }
+    }
+  },
+  "lsp": true,
+  "mcp": {
+    "grafana": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-grafana@0.14.0"
+      ],
+      "environment": {
+        "GRAFANA_URL": "{env:GRAFANA_URL}",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+      },
+      "enabled": false
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "kubernetes-mcp-server@3.8.0"
+      ],
+      "environment": {
+        "KUBECONFIG": "{env:KUBECONFIG}",
+        "ALLOW_ONLY_NON_DESTRUCTIVE_TOOLS": "true"
+      },
+      "enabled": false
+    },
+    "terraform": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "-i",
+        "--rm",
+        "hashicorp/terraform-mcp-server:0.5.2"
+      ],
+      "enabled": false
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      },
+      "enabled": false
+    },
+    "github-research": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_PAT_PUBLIC_READ}",
+        "X-MCP-Toolsets": "context,repos,issues,pull_requests",
+        "X-MCP-Readonly": "true",
+        "X-MCP-Lockdown": "true"
+      },
+      "enabled": false
+    },
+    "github-actions": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_PAT_PRIVATE_READ}",
+        "X-MCP-Toolsets": "context,actions,repos",
+        "X-MCP-Readonly": "true"
+      },
+      "enabled": false
+    },
+    "github-full": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_PAT_WRITE}",
+        "X-MCP-Toolsets": "context,repos,issues,pull_requests,actions,code_security"
+      },
+      "enabled": false
+    },
+    "stitch": {
+      "type": "remote",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "{env:GOOGLE_STITCH_API_KEY}"
+      },
+      "enabled": false
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@0.0.75"
+      ],
+      "enabled": false
+    },
+    "sonarcloud": {
+      "type": "remote",
+      "url": "https://api.sonarcloud.io/mcp",
+      "headers": {
+        "Authorization": "Bearer {env:SONARQUBE_TOKEN}",
+        "SONARQUBE_ORG": "{env:SONARQUBE_ORG}"
+      },
+      "enabled": false
+    },
+    "next-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "next-devtools-mcp@0.3.10"
+      ],
+      "enabled": false
+    },
+    "stripe-test": {
+      "type": "local",
+      "command": ["npx", "@stripe/mcp@0.3.3"],
+      "environment": { "STRIPE_API_KEY": "{env:STRIPE_TEST_API_KEY}" },
+      "enabled": false
+    },
+    "supabase-dev": {
+      "type": "local",
+      "command": [
+        "npx", "-y", "@supabase/mcp-server-supabase@0.8.1",
+        "--access-token", "{env:SUPABASE_DEV_ACCESS_TOKEN}",
+        "--project-ref", "{env:SUPABASE_DEV_PROJECT_REF}"
+      ],
+      "enabled": false
+    },
+    "supabase-test": {
+      "type": "local",
+      "command": [
+        "npx", "-y", "@supabase/mcp-server-supabase@0.8.1",
+        "--access-token", "{env:SUPABASE_TEST_ACCESS_TOKEN}",
+        "--project-ref", "{env:SUPABASE_TEST_PROJECT_REF}"
+      ],
+      "enabled": false
+    }
+  },
+  "plugin": [
+    "opencode-snip@1.6.1",
+    "opencode-quota@3.8.7",
+    "envsitter-guard@0.0.4",
+    "@tarquinen/opencode-dcp@3.1.12",
+    "cc-safety-net@0.9.0"
+  ],
+  "permission": {
+    "edit": "ask",
+    "webfetch": "allow",
+    "skill": {
+      "*": "allow"
+    },
+    "bash": {
+      "ls *": "allow",
+      "pwd": "allow",
+      "cat *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "grep *": "allow",
+      "rg *": "allow",
+      "find *": "allow",
+      "tree *": "allow",
+      "wc *": "allow",
+      "file *": "allow",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git show*": "allow",
+      "git blame*": "allow",
+      "git branch*": "allow",
+      "git ls-files*": "allow",
+      "git fetch*": "allow",
+      "git pull *": "allow",
+      "git push *": "ask",
+      "git worktree list*": "allow",
+      "git worktree add *": "ask",
+      "git worktree remove *": "ask",
+      "git worktree prune*": "ask",
+      "mvn compile*": "allow",
+      "mvn test*": "allow",
+      "mvn verify*": "allow",
+      "mvn -version": "allow",
+      "mvn dependency:tree*": "allow",
+      "./mvnw compile*": "allow",
+      "./mvnw test*": "allow",
+      "./mvnw verify*": "allow",
+      "./mvnw dependency:tree*": "allow",
+      "npm install*": "ask",
+      "npm ci*": "ask",
+      "npm test*": "allow",
+      "npm run lint*": "allow",
+      "npm run build*": "allow",
+      "npm run typecheck*": "allow",
+      "pnpm install*": "ask",
+      "pnpm test*": "allow",
+      "pnpm run lint*": "allow",
+      "pnpm run build*": "allow",
+      "tsc --noEmit": "allow",
+      "kubectl get*": "allow",
+      "kubectl describe*": "allow",
+      "kubectl logs*": "allow",
+      "kubectl top*": "allow",
+      "kubectl config get-contexts*": "allow",
+      "kubectl config current-context*": "allow",
+      "kubectl explain*": "allow",
+      "kubectl version*": "allow",
+      "kubectl rollout status*": "allow",
+      "kubectl apply *": "ask",
+      "kubectl delete *": "ask",
+      "kubectl exec *": "ask",
+      "kubectl patch *": "ask",
+      "kubectl edit *": "ask",
+      "terraform init*": "ask",
+      "terraform validate*": "allow",
+      "terraform fmt*": "allow",
+      "terraform plan*": "allow",
+      "terraform show*": "allow",
+      "terraform output*": "allow",
+      "terraform state list*": "allow",
+      "terraform state show*": "allow",
+      "terraform apply *": "ask",
+      "terraform destroy *": "ask",
+      "docker ps*": "allow",
+      "docker logs*": "allow",
+      "docker inspect*": "allow",
+      "docker images*": "allow",
+      "docker stats --no-stream*": "allow",
+      "docker compose up -d*": "ask",
+      "docker compose down*": "ask",
+      "gh auth status": "allow",
+      "gh repo view*": "allow",
+      "gh pr view*": "allow",
+      "gh pr list*": "allow",
+      "gh issue view*": "allow",
+      "gh issue list*": "allow",
+      "gh run view*": "allow",
+      "gh run list*": "allow",
+      "gh pr create *": "ask",
+      "gh pr merge *": "ask",
+      "gh release create *": "ask",
+      "rm *": "ask",
+      "mv *": "ask",
+      "sudo *": "ask",
+      "*": "ask"
+    }
+  }
+}
