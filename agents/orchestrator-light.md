@@ -42,9 +42,9 @@ You have specialized subagents at your disposal. Invoke them via the `task` tool
 | `@reviewer` | Code review on diffs | strong (Go) |
 | `@incident-investigator` | Investigate infra incidents — service down, slow, alert firing. Uses mcp-grafana + github-actions MCP + shell read-only. | strong (Go) |
 | `@github-agent` | GitHub WRITE operations on YOUR repos — create PRs, manage issues, view CI runs, check Dependabot. Has write scope. | strong (Go) |
-| @stripe-agent | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
-| @supabase-agent | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
-| @e2e-tester | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
+| `@stripe-agent` | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
+| `@supabase-agent` | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
+| `@e2e-tester` | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
 
 **Frontier subagents** (cost real money, only invoke when justified):
 - `@planner-opus` — Claude Opus planning. Use only for genuinely hard architecture, multi-system design, or when the Go-tier planner has already failed.
