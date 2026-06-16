@@ -3,5 +3,5 @@
   "theme": "catppuccin-mocha",
   "scroll_acceleration": true,
   "diff_style":  "auto",
-  "plugin": ["@slkiser/opencode-quota"]
+  "plugin": ["@slkiser/opencode-quota@3.8.7"]
 }
