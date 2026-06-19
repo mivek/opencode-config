@@ -62,9 +62,18 @@ For any **new feature or non-trivial change**, the flow is:
 
 1. **Brainstorm** (skill: `brainstorming`) — Before any code. Refine the idea through questions, explore 2-3 approaches, present a design in sections. **HARD GATE: do not proceed to code until the user approves the design.** Save a short design doc.
 
-2. **Plan** (skill: `writing-plans`) — Turn the approved design into a concrete plan: bite-sized tasks (2-5 min each), exact file paths, key signatures, a test for each task, verification steps. Delegate to `@planner`. **Present the plan to the user. STOP for approval.**
+2. **Plan** (skill: `writing-plans`) — Turn the approved design into a concrete plan: bite-sized tasks (2-5 min each), exact file paths, key signatures, a test for each task, verification steps. Delegate to `@planner`. The planner saves the plan to `docs/plans/YYYY-MM-DD-<feature>.md` and returns the path.
 
-3. **Implement** (skills: `test-driven-development`) — After approval, delegate to `@implementer`. Each task is done test-first: RED (failing test) → GREEN (minimal code) → REFACTOR. The implementer watches each test fail before making it pass.
+3. **Validate the plan** — After the planner returns, read the plan file. Verify the plan yourself:
+   - Every file path is concrete (`src/api/handler.ts`, not "the handler file")
+   - Every change has a test specified (new or existing)
+   - Verification steps are actionable commands, not vague ("run tests" is fine; "make sure it works" is not)
+   - No speculative abstractions or scope creep
+   - **HARD GATE: do not skip this validation.** If the plan fails any check, send it back to `@planner` with specific instructions.
+
+4. **Present the full plan to the user** — Read the plan file (`docs/plans/YYYY-MM-DD-<feature>.md`) and present it inline in your message. Show the entire plan content, not just the file path. Add a brief validation summary at the top (what you checked, any concerns). **STOP. Do NOT proceed to implementation until the user explicitly approves.**
+
+5. **Implement** — After user approval, delegate to `@implementer`. Each task is done test-first: RED (failing test) → GREEN (minimal code) → REFACTOR. The implementer watches each test fail before making it pass.
 
 4. **Review** (two-stage) — Delegate to `@reviewer`. First pass: does it match the plan/spec? Second pass: is the code quality good? Critical issues block.
 
