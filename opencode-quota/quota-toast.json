@@ -1,0 +1,5 @@
+{
+  "$comment": "Config for the @slkiser/opencode-quota plugin. onlyCurrentModel:false so usage for ALL OpenCode Go models is shown (kimi, deepseek-flash, deepseek-pro, gml) — they share one Go dollar budget ($12/5h, $30/week, $60/month), not the kimi-only view. opencodeGoWindows picks which budget windows to display.",
+  "onlyCurrentModel": false,
+  "opencodeGoWindows": ["rolling", "weekly", "monthly"]
+}

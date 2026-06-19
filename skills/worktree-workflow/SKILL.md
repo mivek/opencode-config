@@ -53,21 +53,21 @@ The short description : lowercase, kebab-case, 2-5 words max. Be specific. `feat
 
 ### 1. Create the worktree
 
-Call the `worktree_create` tool with the branch name :
+Use a `git worktree add` command (opencode will prompt — `git worktree add *` is set to `ask`) :
 
+```bash
+git worktree add ../user-csv-export -b feature/user-csv-export      # branches off current HEAD
+# or off an explicit base:
+git worktree add ../user-csv-export -b feature/user-csv-export main
 ```
-worktree_create:
-  branch: "feature/user-csv-export"
-  baseBranch: "main"   # optional, defaults to current HEAD
-```
 
-This will :
-1. Create a git worktree under `~/.local/share/opencode/worktree/<project-id>/feature/user-csv-export`
-2. Sync files per `.opencode/worktree.jsonc` (env files, symlink node_modules, etc.)
-3. Run postCreate hooks (e.g., `./mvnw compile`, `pnpm install`, `terraform init`)
-4. **Spawn a new terminal** with OpenCode running in the worktree
+This creates a sibling directory (`../user-csv-export`) on a new branch. Then do the per-stack
+setup manually (see "Stack-specific notes" below) — e.g. `pnpm install`, `./mvnw compile`, or
+`terraform init` — and copy any needed env files. Tell the user the path; they can `cd` into it
+or keep working from the current session (it's the same isolated directory either way).
 
-You continue in the original session OR switch to the new terminal — your choice. The new terminal has a fresh OpenCode session in the worktree directory.
+> Note: there is no `worktree_create` tool in this setup — drive worktrees with plain `git`
+> commands, which the bash permissions already allow.
 
 ### 2. Work in the worktree
 
@@ -103,44 +103,46 @@ Just leave it. Worktrees persist across reboots. You can have 10+ active simulta
 
 ### 4. Delete the worktree
 
-Call `worktree_delete` :
+First commit or stash anything you want to keep, then run any per-stack teardown manually
+(e.g. `docker compose down`, `./mvnw clean`, `terraform destroy` if you applied). Then remove it
+(opencode prompts — `git worktree remove *` is `ask`) :
 
+```bash
+git worktree remove ../user-csv-export        # add --force if it refuses on dirty state
 ```
-worktree_delete:
-  reason: "Feature merged to main"
-```
 
-This will :
-1. Run preDelete hooks (e.g., `docker compose down`, `./mvnw clean`)
-2. Auto-commit any uncommitted changes (safety net — but you should commit explicitly first)
-3. Remove the worktree directory
-4. Clean up session state
+The branch still exists in git history; the directory is gone. Clean up stale refs later with
+`git worktree prune`.
 
-The branch still exists in git history. The directory is gone.
+> Note: there is no `worktree_delete` tool — `git worktree remove` does the same job. It does
+> **not** auto-commit for you, so commit deliberately before removing.
 
 ## Stack-specific notes
 
+These are **manual** steps to run in the new worktree after `git worktree add` — there's no
+automated post-create hook in this setup.
+
 ### Quarkus (Java + Maven)
-- The `worktree.jsonc` for Quarkus projects compiles in `postCreate` to catch issues early
-- `target/` is per-worktree (never symlinked) — each worktree compiles independently
+- Run `./mvnw compile` once after creating, to catch issues early
+- `target/` is per-worktree — each worktree compiles independently
 - `.m2` is global (`~/.m2`) so dependencies are shared, no re-download
 - Use `./mvnw quarkus:dev` in the worktree — hot reload works normally
 
 ### Next.js (npm/pnpm)
-- `node_modules` is symlinked between worktrees by default (huge time/disk save)
-- `postCreate` runs `pnpm install --prefer-offline` to handle minor diffs between branches
-- If a worktree has very different deps (major upgrade branch), unlink and reinstall
-- `.next/` is excluded (per-worktree build cache)
+- Run `pnpm install --prefer-offline` after creating to handle dep diffs between branches
+- To save time/disk you *can* symlink `node_modules` from the main worktree
+  (`ln -s ../<main>/node_modules node_modules`) — but reinstall fully on a major-upgrade branch
+- `.next/` is a per-worktree build cache; don't share it
 
 ### Terraform
-- **Each worktree has its own `.terraform/`** — never share between worktrees (state corruption)
-- `postCreate` runs `terraform init` + `terraform validate`
-- **If you `terraform apply` in a worktree, you MUST `terraform destroy` before deleting it**, otherwise you orphan cloud resources
+- **Each worktree must have its own `.terraform/`** — never share between worktrees (state corruption)
+- Run `terraform init` + `terraform validate` after creating
+- **If you `terraform apply` in a worktree, you MUST `terraform destroy` before removing it**, otherwise you orphan cloud resources
 - Use `terraform workspace` if you need multiple environments per worktree
 
 ### Kubernetes (manifests in a repo)
 - Standard text-file workflow, no special handling needed
-- If you have local kind/minikube configs, list them in `copyFiles`
+- Copy any local kind/minikube configs into the worktree manually if a command needs them
 
 ## Multi-worktree coordination
 
@@ -160,11 +162,13 @@ If multiple agents/sessions are working on related features in parallel :
 
 ## Quick reference
 
-| Action | Command (via worktree tool) | Command (manual git) |
-|---|---|---|
-| List worktrees | — | `git worktree list` |
-| Create | `worktree_create(branch="feature/x")` | `git worktree add ../x feature/x` |
-| Delete | `worktree_delete(reason="merged")` | `git worktree remove ../x` |
-| Clean up dead refs | — | `git worktree prune` |
+| Action | Command |
+|---|---|
+| List worktrees | `git worktree list` |
+| Create | `git worktree add ../x -b feature/x` |
+| Delete | `git worktree remove ../x` (add `--force` if dirty) |
+| Clean up dead refs | `git worktree prune` |
 
-When invoked by an agent : prefer the `worktree_create` / `worktree_delete` tools — they handle terminal spawning, file sync, and hooks automatically.
+Drive worktrees with plain `git` commands — they're already covered by the bash permissions
+(`git worktree add/remove/prune` are `ask`, `git worktree list` is `allow`). There is no
+worktree plugin/tool installed; file sync and per-stack setup are manual (see notes above).

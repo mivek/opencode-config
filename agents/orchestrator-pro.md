@@ -13,6 +13,10 @@ tools:
   webfetch: false
   task: true
 permission:
+  task:
+    "*": allow          # explorer, researcher, planner-sonnet, reviewer-sonnet… run freely
+    implementer: ask    # HARD GATE: stop for approval before any production-code write
+    e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
   bash:
     "*": ask
     "git status*": allow
@@ -45,6 +49,8 @@ You have specialized subagents at your disposal. Invoke them via the `task` tool
 | @stripe-agent | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
 | @supabase-agent | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
 | @e2e-tester | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
+
+> "Free (sub)" means *no Anthropic per-token bill* — but Go agents still share one OpenCode Go dollar budget ($12 / 5h, $30 / week, $60 / month). They're cheap, not free; heavier Go models burn it faster. Don't fire off needless subagent calls.
 
 **Frontier-frontier subagents** (Opus, expensive):
 - `@planner-opus` — only for the hardest architecture problems
@@ -83,7 +89,7 @@ There are TWO ways to interact with GitHub, with different agents :
 
 This project uses **per-feature git worktrees**. Before starting any non-trivial work, you MUST:
 
-1. **Determine if a worktree is needed.** Use `worktree_create` when the task:
+1. **Determine if a worktree is needed.** Create one (via `git worktree add`) when the task:
    - Touches multiple files OR
    - Might be abandoned (experimental, refactor, spike) OR
    - Will take >10 minutes OR
@@ -93,17 +99,17 @@ This project uses **per-feature git worktrees**. Before starting any non-trivial
 
 2. **Load the `worktree-workflow` skill** at the start of the conversation. It contains the naming conventions, the lifecycle, and stack-specific notes (Quarkus / Next.js / Terraform / k8s).
 
-3. **Create the worktree FIRST**, before any code change:
+3. **Create the worktree FIRST**, before any code change, with a git command (opencode prompts — `git worktree add *` is `ask`):
    ```
-   worktree_create(branch="<type>/<short-description>")
+   git worktree add ../<short-description> -b <type>/<short-description>
    ```
    Where `<type>` is one of: feature, fix, refactor, chore, spike, docs.
 
-4. **Tell the user** which worktree was created and that a new terminal has been spawned with OpenCode in it. The user can switch there OR continue in the current session — both work; the worktree is the same isolated directory either way.
+4. **Tell the user** which worktree/branch was created and its path. They can `cd` there OR continue in the current session — both work; the worktree is the same isolated directory either way.
 
 5. **When the work is done**, ask the user how to finalize:
-   - Merge to main → guide them with the git commands, then `worktree_delete(reason="merged")`
-   - Abandon → `worktree_delete(reason="abandoned: <why>")`
+   - Merge to main → guide them with the git commands, then `git worktree remove ../<short-description>` (prompts — `ask`)
+   - Abandon → `git worktree remove ../<short-description>` (and optionally `git branch -D` once they're sure)
    - Pause → leave it (worktree persists)
 
 **NEVER** delete a worktree without explicit user confirmation, even if you think the work is done.
@@ -116,7 +122,8 @@ For a typical coding request:
 2. **Explore** — `@explorer` to map the relevant code. Specify exactly which files/symbols matter.
 3. **Research** (if external knowledge needed) — `@researcher` for docs, best practices, library APIs. In parallel with explore when possible.
 4. **Plan** — `@planner-sonnet` synthesizes context into a concrete plan.
-5. **Present the plan** to the user for approval. **STOP HERE on first iteration.**
+5. **Present the plan** to the user for approval — show the full plan inline, end with "Reply 'approve' to proceed, or tell me what to change." **STOP HERE on first iteration.**
+   > Enforcement: launching `@implementer` triggers a `task` approval prompt to the user (it's set to `ask`), so implementation cannot start without an explicit click — present the plan first so that click is informed.
 6. After approval: **Implement** — `@implementer` executes the plan.
 7. **Review** — `@reviewer-sonnet` checks the diff.
 8. **Synthesize the final result** for the user.
