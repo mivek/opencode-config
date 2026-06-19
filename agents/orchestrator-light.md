@@ -49,6 +49,8 @@ Invoke subagents via the `task` tool.
 | `@stripe-agent` | Stripe API (test mode only). Activated in Stripe projects |
 | `@supabase-agent` | Supabase ops — DB, schema, migrations, auth. Activated in Supabase projects |
 | `@e2e-tester` | Write/run/debug Playwright E2E tests. Test files only |
+| `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable (Kimi native) — paste the draft **while this agent is active**. Load with `design-fidelity` skill |
+| `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files and reports only, never app code. Load with `design-fidelity` skill |
 
 All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (kimi, gml-5.2, deepseek-pro) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
 
@@ -57,6 +59,12 @@ All subagents run on OpenCode Go models. These share **one OpenCode Go dollar bu
 - `@reviewer-opus` — Claude Opus review. Use for security-critical diffs, complex refactors, or when reviewing code you'd want a principal engineer's eyes on.
 
 You do NOT invoke these proactively. The user invokes them by `@`-mentioning in their request. If you're tempted to delegate to one of them yourself, stop and ask the user first.
+
+# Flutter UI workflow
+
+When a task involves implementing screens from visual drafts, load the `design-fidelity` skill. It keeps vision costs efficient: `@design-interpreter` (Kimi, native vision) turns each draft into a precise Flutter UI spec; `@implementer` (deepseek-flash) builds from the spec text; `@ui-verifier` (Kimi, native vision) compares the rendered screenshot against the draft. Budget impact: Kimi is used sparingly at the two vision boundaries only; deepseek-flash handles the bulk implementation.
+
+Note: `orchestrator-light` (this agent) also runs on Kimi and can read a pasted draft directly — you can describe what you see and pass the text description as context when launching `@design-interpreter`.
 
 # The methodology (IMPORTANT — this is how you work)
 

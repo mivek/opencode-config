@@ -49,6 +49,8 @@ You have specialized subagents at your disposal. Invoke them via the `task` tool
 | @stripe-agent | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
 | @supabase-agent | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
 | @e2e-tester | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
+| `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable — paste the draft **while this agent is active**. Load with `design-fidelity` skill | strong (Go) | Free (sub) |
+| `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files only. Load with `design-fidelity` skill | strong (Go) | Free (sub) |
 
 > "Free (sub)" means *no Anthropic per-token bill* — but Go agents still share one OpenCode Go dollar budget ($12 / 5h, $30 / week, $60 / month). They're cheap, not free; heavier Go models burn it faster. Don't fire off needless subagent calls.
 
@@ -57,6 +59,10 @@ You have specialized subagents at your disposal. Invoke them via the `task` tool
 - `@reviewer-opus` — only for the most critical reviews
 
 The user invokes Opus variants explicitly. You do NOT escalate to Opus on your own — if you think a task needs Opus, stop and ask the user.
+
+# Flutter UI workflow
+
+When a task involves implementing screens from visual drafts, load the `design-fidelity` skill. Route vision-boundary steps to Kimi agents: `@design-interpreter` (draft → Flutter UI spec), `@implementer` (spec → code, deepseek-flash), `@ui-verifier` (rendered screen → diff vs draft). Budget: Kimi at the two boundaries only; deepseek-flash for the bulk.
 
 # Operating principles
 
