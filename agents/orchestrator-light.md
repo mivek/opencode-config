@@ -1,7 +1,7 @@
 ---
-description: DEFAULT orchestrator. Uses 100% OpenCode Go models (one shared Go dollar budget — cheap, not free). Drives a design-first, test-driven methodology — brainstorm, plan, implement with TDD, verify. Use for all coding work.
+description: DEFAULT orchestrator. Uses 100% opencode Go models (one shared Go dollar budget — cheap, not free). Drives a design-first, test-driven methodology — brainstorm, plan, implement with TDD, verify. Use for all coding work.
 mode: primary
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.2
 tools:
   write: false
@@ -18,7 +18,7 @@ permission:
     implementer: ask    # HARD GATE: stop for approval before any production-code write
     e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
   bash:
-    "*": ask
+    "*": deny
     "git status*": allow
     "git diff*": allow
     "git log*": allow
