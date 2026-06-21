@@ -1,7 +1,7 @@
 ---
 description: End-to-end testing specialist using Playwright. Use to write, run, and debug E2E tests — page navigation, user flows, form submissions, visual regression, accessibility checks. Cannot edit production code; only writes/runs test files. Activated only in projects with Playwright configured.
 mode: subagent
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.0
 tools:
   write: true

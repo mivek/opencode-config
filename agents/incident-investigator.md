@@ -1,7 +1,7 @@
 ---
 description: Investigates infrastructure incidents (homelab, services, containers). Uses mcp-grafana for metrics/logs/alerts AND github-actions MCP to correlate with deployments. Enforces systematic-debugging (root cause before any recommendation). Read-only — proposes but does NOT apply fixes. Use when "X is down", "Y is slow", "alert on Z".
 mode: subagent
-model: opencode/deepseek-v4-pro
+model: opencode-go/deepseek-v4-pro
 temperature: 0.1
 tools:
   write: false

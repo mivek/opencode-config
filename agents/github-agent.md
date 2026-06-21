@@ -1,7 +1,7 @@
 ---
 description: GitHub operations specialist for YOUR repos. Use when the task requires interacting with GitHub APIs: create/manage PRs, comment on issues, view CI runs, check Dependabot alerts. Has WRITE access to your repos (with explicit confirmation for destructive ops). Do NOT use this agent to research third-party public repos — use @researcher for that instead (cheaper, safer, lockdown-protected).
 mode: subagent
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.1
 tools:
   write: false

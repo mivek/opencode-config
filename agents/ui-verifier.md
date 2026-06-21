@@ -1,7 +1,7 @@
 ---
 description: Flutter visual verification agent. Runs golden tests (matchesGoldenFile) and compares rendered screenshots against the original screen drafts using Kimi K2.6's native vision. Reports deviations — spacing, color, alignment, missing elements — but never edits production code. Invoke in the design-fidelity verify loop after each implementation pass.
 mode: subagent
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.0
 tools:
   write: true

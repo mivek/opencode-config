@@ -1,7 +1,7 @@
 ---
 description: Design interpreter for Flutter UI. Given a screen draft pasted as an image, produces a precise Flutter UI spec (docs/designs/<screen>.spec.md) and shared design tokens (docs/designs/tokens.md) using Kimi K2.6's native vision. Invoke before implementing any UI screen. Cannot edit production code.
 mode: subagent
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.1
 tools:
   write: true

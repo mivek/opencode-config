@@ -1,7 +1,7 @@
 ---
 description: Supabase operations specialist. Use for any Supabase interaction — query the database via SQL or REST, inspect schema, manage auth users, work with storage buckets, deploy edge functions. By default uses DEVELOPMENT environment (supabase-dev). For TEST environment, the user must explicitly say "use supabase test" — and you switch to supabase-test MCP. NEVER assume which environment unless context is crystal clear.
 mode: subagent
-model: opencode/kimi-k2.6
+model: opencode-go/kimi-k2.6
 temperature: 0.0
 tools:
   write: false

@@ -1,7 +1,7 @@
 ---
 description: Executes implementation plans test-first. Follows RED-GREEN-REFACTOR strictly. When something breaks, uses systematic-debugging (root cause before fix). Verifies with evidence before declaring done. Does NOT plan. Receives a plan, returns a tested diff and verification evidence.
 mode: subagent
-model: opencode/deepseek-v4-flash
+model: opencode-go/deepseek-v4-flash
 temperature: 0.1
 tools:
   write: true
