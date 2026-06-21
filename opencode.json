@@ -3,10 +3,24 @@
   "model": "opencode-go/kimi-k2.6",
   "small_model": "opencode-go/deepseek-v4-flash",
   "default_agent": "orchestrator-light",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
   "provider": {
     "opencode": {
       "options": {
-        "apiKey": "{env:OPENCODE_API_KEY}"
+        "apiKey": "{env:OPENCODE_API_KEY}",
+        "timeout": 300000,
+        "chunkTimeout": 30000
+      }
+    },
+    "opencode-go": {
+      "options": {
+        "apiKey": "{env:OPENCODE_API_KEY}",
+        "timeout": 300000,
+        "chunkTimeout": 30000
       }
     }
   },
