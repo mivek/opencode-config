@@ -16,10 +16,10 @@ permission:
   write: deny
   bash:
     "*": deny
-    "ls*": allow
-    "cat*": allow
-    "git status*": allow
-    "git diff*": allow
+    "snip ls*": allow
+    "snip cat*": allow
+    "snip git status*": allow
+    "snip git diff*": allow
 ---
 
 # Role

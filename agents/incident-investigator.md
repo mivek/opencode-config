@@ -20,38 +20,38 @@ permission:
   write: deny
   bash:
     "*": deny
-    "ls*": allow
-    "cat*": allow
-    "tail*": allow
-    "head*": allow
-    "grep*": allow
-    "rg*": allow
-    "find*": allow
-    "wc*": allow
-    "docker ps*": allow
-    "docker logs*": allow
-    "docker inspect*": allow
-    "docker stats --no-stream*": allow
-    "kubectl get*": allow
-    "kubectl describe*": allow
-    "kubectl logs*": allow
-    "kubectl top*": allow
-    "systemctl status*": allow
-    "systemctl is-active*": allow
-    "journalctl*": allow
-    "ss*": allow
-    "ip a*": allow
-    "ip route*": allow
-    "ping -c*": allow
-    "dig*": allow
-    "nslookup*": allow
-    "curl -s -o /dev/null -w*": allow
-    "curl -sI*": allow
-    "df -h*": allow
-    "free -h*": allow
-    "uptime": allow
-    "uname*": allow
-    "date": allow
+    "snip ls*": allow
+    "snip cat*": allow
+    "snip tail*": allow
+    "snip head*": allow
+    "snip grep*": allow
+    "snip rg*": allow
+    "snip find*": allow
+    "snip wc*": allow
+    "snip docker ps*": allow
+    "snip docker logs*": allow
+    "snip docker inspect*": allow
+    "snip docker stats --no-stream*": allow
+    "snip kubectl get*": allow
+    "snip kubectl describe*": allow
+    "snip kubectl logs*": allow
+    "snip kubectl top*": allow
+    "snip systemctl status*": allow
+    "snip systemctl is-active*": allow
+    "snip journalctl*": allow
+    "snip ss*": allow
+    "snip ip a*": allow
+    "snip ip route*": allow
+    "snip ping -c*": allow
+    "snip dig*": allow
+    "snip nslookup*": allow
+    "snip curl -s -o /dev/null -w*": allow
+    "snip curl -sI*": allow
+    "snip df -h*": allow
+    "snip free -h*": allow
+    "snip uptime": allow
+    "snip uname*": allow
+    "snip date": allow
 ---
 
 # Role

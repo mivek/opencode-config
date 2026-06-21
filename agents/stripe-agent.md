@@ -15,8 +15,8 @@ mcp:
   stripe-test: true
 permission:
   bash:
-    "stripe listen*": "allow"
-    "stripe trigger*": "ask"
+    "snip stripe listen*": "allow"
+    "snip stripe trigger*": "ask"
     "*": "deny"
 ---
 

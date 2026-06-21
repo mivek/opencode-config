@@ -20,12 +20,12 @@ permission:
     "docs/reports/**": "allow"
     "**": "deny"
   bash:
-    "ls *": "allow"
-    "cat *": "allow"
-    "flutter --version": "allow"
-    "flutter analyze*": "allow"
-    "flutter test*": "allow"
-    "flutter test --update-goldens*": "ask"
+    "snip ls *": "allow"
+    "snip cat *": "allow"
+    "snip flutter --version": "allow"
+    "snip flutter analyze*": "allow"
+    "snip flutter test*": "allow"
+    "snip flutter test --update-goldens*": "ask"
     "*": "deny"
 ---
 

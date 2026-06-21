@@ -16,27 +16,27 @@ permission:
   write: ask
   bash:
     "*": ask
-    "ls*": allow
-    "cat*": allow
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "npm test*": allow
-    "pnpm test*": allow
-    "yarn test*": allow
-    "pytest*": allow
-    "go test*": allow
-    "cargo test*": allow
-    "cargo check*": allow
-    "tsc --noEmit": allow
-    "ruff*": allow
-    "eslint*": allow
-    "./mvnw test*": allow
-    "./mvnw compile*": allow
-    "./mvnw verify*": allow
-    "mvn test*": allow
-    "mvn compile*": allow
-    "mvn verify*": allow
+    "snip ls*": allow
+    "snip cat*": allow
+    "snip git status*": allow
+    "snip git diff*": allow
+    "snip git log*": allow
+    "snip npm test*": allow
+    "snip pnpm test*": allow
+    "snip yarn test*": allow
+    "snip npx tsc*": allow
+    "snip pytest*": allow
+    "snip go test*": allow
+    "snip cargo test*": allow
+    "snip cargo check*": allow
+    "snip ruff*": allow
+    "snip eslint*": allow
+    "snip ./mvnw test*": allow
+    "snip ./mvnw compile*": allow
+    "snip ./mvnw verify*": allow
+    "snip mvn test*": allow
+    "snip mvn compile*": allow
+    "snip mvn verify*": allow
 ---
 
 # Role
