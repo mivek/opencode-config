@@ -16,22 +16,22 @@ permission:
   write: deny
   bash:
     "*": deny
-    "snip ls*": allow
-    "snip cat*": allow
-    "snip find*": allow
-    "snip wc*": allow
-    "snip head*": allow
-    "snip tail*": allow
-    "snip tree*": allow
-    "snip file*": allow
-    "snip rg*": allow
-    "snip grep*": allow
-    "snip git status*": allow
-    "snip git log*": allow
-    "snip git diff*": allow
-    "snip git show*": allow
-    "snip git ls-files*": allow
-    "snip git blame*": allow
+    "ls*": allow
+    "cat*": allow
+    "find*": allow
+    "wc*": allow
+    "head*": allow
+    "tail*": allow
+    "tree*": allow
+    "file*": allow
+    "rg*": allow
+    "grep*": allow
+    "git status*": allow
+    "git log*": allow
+    "git diff*": allow
+    "git show*": allow
+    "git ls-files*": allow
+    "git blame*": allow
 ---
 
 # Role

@@ -161,7 +161,6 @@
     }
   },
   "plugin": [
-    "opencode-snip@1.6.1",
     "@slkiser/opencode-quota@3.8.7",
     "envsitter-guard@0.0.4",
     "cc-safety-net@0.9.0"

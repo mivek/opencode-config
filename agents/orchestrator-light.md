@@ -19,12 +19,12 @@ permission:
     e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
   bash:
     "*": deny
-    "snip git status*": allow
-    "snip git diff*": allow
-    "snip git log*": allow
-    "snip ls*": allow
-    "snip pwd": allow
-    "snip cat*": allow
+    "git status*": allow
+    "git diff*": allow
+    "git log*": allow
+    "ls*": allow
+    "pwd": allow
+    "cat*": allow
 ---
 
 # Role

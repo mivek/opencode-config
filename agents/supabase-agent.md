@@ -16,14 +16,14 @@ mcp:
   supabase-test: true
 permission:
   bash:
-    "snip supabase status*": "allow"
-    "snip supabase db diff*": "allow"
-    "snip supabase functions list*": "allow"
-    "snip supabase migration list*": "allow"
-    "snip supabase db push*": "ask"
-    "snip supabase functions deploy*": "ask"
-    "snip supabase migration new*": "ask"
-    "snip supabase migration up*": "ask"
+    "supabase status*": "allow"
+    "supabase db diff*": "allow"
+    "supabase functions list*": "allow"
+    "supabase migration list*": "allow"
+    "supabase db push*": "ask"
+    "supabase functions deploy*": "ask"
+    "supabase migration new*": "ask"
+    "supabase migration up*": "ask"
     "*": "deny"
 ---
 

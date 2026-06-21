@@ -16,18 +16,18 @@ permission:
   write: deny
   bash:
     "*": deny
-    "snip git diff*": allow
-    "snip git log*": allow
-    "snip git show*": allow
-    "snip git status*": allow
-    "snip git blame*": allow
-    "snip ls*": allow
-    "snip cat*": allow
-    "snip ruff check*": allow
-    "snip eslint*": allow
-    "snip cargo clippy*": allow
-    "snip go vet*": allow
-    "snip npx tsc*": allow
+    "git diff*": allow
+    "git log*": allow
+    "git show*": allow
+    "git status*": allow
+    "git blame*": allow
+    "ls*": allow
+    "cat*": allow
+    "ruff check*": allow
+    "eslint*": allow
+    "cargo clippy*": allow
+    "go vet*": allow
+    "npx tsc*": allow
 ---
 
 # Role

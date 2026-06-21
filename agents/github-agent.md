@@ -15,12 +15,12 @@ mcp:
   github-full: true
 permission:
   bash:
-    "snip git fetch*": "allow"
-    "snip git pull *": "allow"
-    "snip git status*": "allow"
-    "snip git log*": "allow"
-    "snip git push *": "ask"
-    "snip gh *": "ask"
+    "git fetch*": "allow"
+    "git pull *": "allow"
+    "git status*": "allow"
+    "git log*": "allow"
+    "git push *": "ask"
+    "gh *": "ask"
     "*": "deny"
 ---
 
