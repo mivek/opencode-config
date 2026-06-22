@@ -28,6 +28,8 @@ permission:
     "cargo clippy*": allow
     "go vet*": allow
     "npx tsc*": allow
+    "./mvnw compile*": allow
+    "mvn compile*": allow
 ---
 
 # Role
