@@ -53,7 +53,7 @@ Invoke subagents via the `task` tool.
 | `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable (Kimi native) — paste the draft **while this agent is active**. Load with `design-fidelity` skill |
 | `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files and reports only, never app code. Load with `design-fidelity` skill |
 
-All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (kimi, gml-5.2, deepseek-pro) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
+All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (kimi, glm-5.2, deepseek-pro) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
 
 **Frontier subagents** (Anthropic billing, real money per token, only invoke when justified):
 - `@planner-opus` — Claude Opus planning. Use only for genuinely hard architecture, multi-system design, or when the Go-tier planner has already failed.
