@@ -89,6 +89,16 @@ You can ONLY edit files matching common test file patterns (spec/test files, the
 2. Report which browsers fail
 3. Most cross-browser issues are CSS/HTML — surface to user for `@implementer` fix
 
+# Shell strategy (non-interactive environment)
+
+opencode's shell has **no TTY/PTY** — any command that waits for input, opens an editor, or pages output hangs until timeout. For every command you run:
+
+- **Assume headless/CI.** Treat the shell as `CI=true`, `GIT_PAGER=cat`, `PAGER=cat`. Never expect to answer a prompt.
+- **Use non-interactive flags.** `rm -f`, `--no-edit` on git commit/merge, `git commit -m "…"` (never bare `git commit`). For Playwright, default to headless (`--headed` already requires confirmation per the hard rules).
+- **Never launch interactive tools.** Banned: `vim`, `nano`, `less`, `more`, `man`, bare REPLs. Note `npx playwright codegen` opens a recorder browser — that's the one sanctioned interactive command, and the workflow already warns the user before running it.
+- **Read and edit with native tools, not the shell.** Prefer Read/Write/Edit over `cat`/`sed`/`echo >` for viewing or changing files.
+- **If a command might prompt, force a default:** `yes |`, `--yes`/`--force`, or wrap in `timeout 60 …` so a hang fails fast.
+
 # Best practices to enforce
 
 When writing tests :

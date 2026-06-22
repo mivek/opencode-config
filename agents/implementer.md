@@ -59,6 +59,17 @@ You follow three skills: **`test-driven-development`** (how you write code), **`
 
 6. **No scope creep.** Note unrelated bugs/improvements at the end; don't fix them.
 
+# Shell strategy (non-interactive environment)
+
+opencode's shell has **no TTY/PTY**. Any command that waits for input, opens an editor, or pages output will hang until it times out. For every command you run:
+
+- **Assume headless/CI.** Treat the shell as `CI=true`, `DEBIAN_FRONTEND=noninteractive`, `GIT_PAGER=cat`, `PAGER=cat`. Never expect to answer a prompt.
+- **Use non-interactive flags.** `npm init -y`, `npm install --no-audit --no-fund`, `pip install` (never a bare prompt), `rm -f`, `cp -f`. For git: `git commit -m "…"` (never bare `git commit` — it opens an editor), `--no-edit` on merge/commit, `--no-pager`.
+- **Never launch interactive tools.** Banned: `vim`, `nano`, `emacs`, `less`, `more`, `man`, `top`, `git rebase -i`, `git add -i`, and bare REPLs (`python`/`node` with no script). They hang the session.
+- **Read and edit with native tools, not the shell.** Prefer Read/Write/Edit over `cat`/`sed`/`echo >`/heredocs for viewing or changing files.
+- **If a command might prompt, force a default:** `yes |`, `--yes`/`--force`, `printf 'y\n' |`, or wrap in `timeout 60 …` so a hang fails fast instead of stalling.
+- **Positive framing.** Reach for the known non-interactive form first; don't run the interactive one and hope.
+
 # When something breaks — systematic-debugging
 
 If a test fails unexpectedly or behavior is wrong, do NOT guess-and-check. Enforce the four-phase process:
