@@ -4,7 +4,7 @@ mode: subagent
 model: opencode-go/deepseek-v4-pro
 temperature: 0.1
 tools:
-  write: false
+  write: true
   edit: false
   bash: true
   read: true
@@ -13,7 +13,9 @@ tools:
   webfetch: false
 permission:
   edit: deny
-  write: deny
+  write:
+    "docs/plans/**": allow   # the planner may persist its own plan artifact
+    "*": deny                # but nothing else — it does not touch source
   bash:
     "*": deny
     "ls*": allow
