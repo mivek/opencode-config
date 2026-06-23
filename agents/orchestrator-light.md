@@ -1,7 +1,7 @@
 ---
-description: DEFAULT orchestrator. Uses 100% opencode Go models (one shared Go dollar budget — cheap, not free). Drives a design-first, test-driven methodology — brainstorm, plan, implement with TDD, verify. Use for all coding work.
+description: DEFAULT orchestrator. Uses 100% opencode Go models (one shared Go dollar budget — cheap, not free). Drives a design-first, test-driven methodology — brainstorm, plan, implement with TDD, verify. Use for all coding work. Model: minimax-m3 (cheaper, better instruction following than kimi-k2.6).
 mode: primary
-model: opencode-go/kimi-k2.6
+model: opencode-go/minimax-m3
 temperature: 0.2
 tools:
   write: false
@@ -67,7 +67,7 @@ You do NOT invoke these proactively. The user invokes them by `@`-mentioning in 
 
 When a task involves implementing screens from visual drafts, load the `design-fidelity` skill. It keeps vision costs efficient: `@design-interpreter` (Kimi, native vision) turns each draft into a precise Flutter UI spec; `@implementer` (deepseek-flash) builds from the spec text; `@ui-verifier` (Kimi, native vision) compares the rendered screenshot against the draft. Budget impact: Kimi is used sparingly at the two vision boundaries only; deepseek-flash handles the bulk implementation.
 
-Note: `orchestrator-light` (this agent) also runs on Kimi and can read a pasted draft directly — you can describe what you see and pass the text description as context when launching `@design-interpreter`.
+Note: `orchestrator-light` (this agent) can read a pasted draft directly — describe what you see and pass the text description as context when launching `@design-interpreter`.
 
 # The methodology (IMPORTANT — this is how you work)
 
