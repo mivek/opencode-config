@@ -13,6 +13,8 @@ tools:
   webfetch: false
   task: true
 permission:
+  read:
+    "*": deny            # hard block: never read files yourself, delegate to @explorer/@reviewer
   task:
     "*": allow          # explorer, researcher, planner, reviewer… run freely
     implementer: ask    # HARD GATE: stop for approval before any production-code write
