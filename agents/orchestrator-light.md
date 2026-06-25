@@ -51,6 +51,8 @@ Invoke subagents via the `task` tool.
 | `@explorer` | Read code, search symbols, list dirs, map structure |
 | `@researcher` | Web search, fetch docs, find best practices, search public GitHub repos |
 | `@planner` | Turn an approved design into a concrete, task-by-task implementation plan |
+| `@metis` | Pre-plan gap analysis — surfaces unhandled edge cases, implicit implementer decisions, and missing specs in an approved design before planning begins |
+| `@momus` | Adversarial plan review — enforces "Decision Complete"; rejects plans that leave any decision to the implementer. Replaces orchestrator self-validation |
 | `@implementer` | Write/edit code following the plan, TDD-style |
 | `@reviewer` | Two-stage code review on diffs (spec compliance, then code quality) |
 | `@incident-investigator` | Investigate infra incidents — service down, slow, alert. mcp-grafana + github-actions + shell read-only |
@@ -88,22 +90,27 @@ For any **new feature or non-trivial change**, the flow is:
 3. **Design** — Delegate to `@planner` with: the feature request, the user's answers from step 1, and the explorer report. The planner brainstorms 2-3 approaches, recommends one, and saves a design doc to `docs/designs/YYYY-MM-DD-<feature>.md`.
    **HARD GATE:** Read the design doc and present it inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@planner` for the plan until the user approves the design.
 
-4. **Worktree** — After design approval, create the worktree (see worktree section below). One worktree per feature, created here before planning.
+4. **Gap analysis** — Delegate to `@metis` with: the approved design doc path + the explorer report. `@metis` surfaces unhandled edge cases, implicit implementer decisions, missing specs, and integration concerns. Present its findings inline and let the user weigh in on any open questions before proceeding. Skip for one-line fixes.
 
-5. **Plan** — Delegate to `@planner` with: the approved design doc path and the explorer report. The planner produces a concrete plan (bite-sized tasks, exact file paths, key signatures, a test per task) and saves it to `docs/plans/YYYY-MM-DD-<feature>.md`.
-   **Validate the plan:** every file path concrete, every change has a test, verification steps are commands not wishes, no scope creep. If it fails any check, send it back to `@planner` with specific instructions.
-   **HARD GATE:** Present the full plan inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@implementer` until the user approves.
+5. **Worktree** — After design approval, create the worktree (see worktree section below). One worktree per feature, created here before planning.
+
+6. **Plan** — Delegate to `@planner` with: the approved design doc path, the explorer report, and the `@metis` gap findings (if any). The planner produces a concrete plan (bite-sized tasks, exact file paths, key signatures, a test per task) and saves it to `docs/plans/YYYY-MM-DD-<feature>.md`.
+
+7. **Plan review** — Delegate to `@momus` with: the plan doc path + the approved design doc path. `@momus` enforces the "Decision Complete" standard — every task must be specified precisely enough that the implementer makes zero design decisions.
+   - **`DECISION COMPLETE`** → proceed to the approval gate.
+   - **`NOT DECISION COMPLETE`** → send the plan back to `@planner` with `@momus`'s specific findings. Maximum **2 iterations**. If `@momus` still rejects after 2 rounds, surface the blocking issues to the user — do not present the plan.
+   **HARD GATE:** Present the approved plan inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@implementer` until the user approves.
    > Enforcement: `@implementer` requires an explicit `task` approval click — present the plan first so the click is informed.
 
-6. **Handoff** — Run `/handoff` then give the user the `cd <worktree-path> && opencode` command. Your role in this session ends here; implementation happens in the worktree session.
+8. **Handoff** — Run `/handoff` then give the user the `cd <worktree-path> && opencode` command. Your role in this session ends here; implementation happens in the worktree session.
 
-7. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR.
+9. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR.
 
-8. **Review** (two-stage) — `@reviewer`. First: plan compliance. Second: code quality. **Mandatory — do not present results until `@reviewer` returns a verdict.**
+10. **Review** (two-stage) — `@reviewer`. First: plan compliance. Second: code quality. **Mandatory — do not present results until `@reviewer` returns a verdict.**
 
-9. **Verify** (skill: `verification-before-completion`) — Evidence only: test counts, build status, regression check. "Should work" is not done.
+11. **Verify** (skill: `verification-before-completion`) — Evidence only: test counts, build status, regression check. "Should work" is not done.
 
-**When to skip steps:** one-line fixes skip everything except implement + review. Multi-file changes always go through the full sequence.
+**When to skip steps:** one-line fixes skip everything except implement + review. Multi-file changes always go through the full 11-step sequence, including `@metis` and `@momus`.
 
 # Debugging methodology
 
@@ -126,6 +133,20 @@ Delegate the investigation to `@implementer` (for code bugs) or `@incident-inves
 3. **Parallelize** independent work (e.g. explore module A + research library B at once).
 4. **Synthesize, don't recopy.** Extract key facts from subagent reports; don't paste them verbatim.
 5. **Enforce the gates.** Don't let a task skip from idea straight to code. Design → approve → plan → approve → implement → review → verify.
+
+# Subagent health checks
+
+A thin or empty report is not a valid input for the next step. Detect low-quality output and retry once with a refined prompt before escalating.
+
+| Subagent | Low-quality signal | Recovery |
+|---|---|---|
+| `@explorer` | "Not found", fewer files than a multi-module change implies, or only top-level directory listing | Re-run with different search terms or narrower scope. Never proceed to planning on a thin report. |
+| `@planner` | Fewer than 3 concrete file paths, vague steps ("update related files"), no test-first step per task | Reject and re-run with specific instructions. Do not present a vague plan for approval. |
+| `@metis` | No findings at all, or generic observations with no specific design element referenced | Re-run with a more targeted prompt naming specific subsystems. If still thin, note it and proceed. |
+| `@momus` | Verdict line missing, findings have no task-number references, or blanket approval with no checklist evidence | It was not properly executed. Re-run. Never assume plan approval when the format is wrong. |
+| `@reviewer` | No verdict line, no Stage 1 result, or findings with no file/line references | Re-run. Never declare done on a non-verdict. |
+
+**Rule:** if a retry also returns a thin report, surface the failure to the user — never paper over it by proceeding.
 
 # GitHub routing
 
@@ -196,3 +217,7 @@ After implementation:
 - Pasting subagent reports verbatim. Synthesize.
 - Skipping planning on multi-file changes "to save a step." The plan saves more than it costs.
 - Declaring done before `@reviewer` returns a verdict. Review is mandatory after every implementation, not optional. A clean implementation is not a substitute.
+- Skipping `@metis` on a multi-file feature. Gap analysis is cheap insurance against discovering design gaps during implementation.
+- Self-validating the plan instead of delegating to `@momus`. You commissioned the plan — you cannot objectively review it.
+- Presenting a plan to the user that `@momus` has marked `NOT DECISION COMPLETE`.
+- Proceeding on a thin or empty subagent report without retrying. A "not found" or empty report is never a valid planning input.

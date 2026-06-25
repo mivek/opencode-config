@@ -72,7 +72,7 @@ Save the design to `docs/designs/YYYY-MM-DD-<feature>.md` and return the path. T
 
 # Mode 2 — Plan
 
-Called with: approved design doc path + explorer report. The design is already approved.
+Called with: approved design doc path + explorer report + `@metis` gap findings (if any). The design is already approved.
 
 Follow the **`writing-plans` skill**. The essentials:
 
@@ -82,6 +82,7 @@ Follow the **`writing-plans` skill**. The essentials:
 4. **One approach.** The design already decided this. Don't re-open it.
 5. **Signatures, not implementations.** Pseudocode and shapes are fine; full bodies are the implementer's job.
 6. **YAGNI explicit.** State what you're deliberately NOT building.
+7. **Address Metis gaps.** If `@metis` findings were provided, every finding must be explicitly addressed by a task or listed under Out of scope with a reason. A finding silently dropped is a plan defect.
 
 Save to `docs/plans/YYYY-MM-DD-<feature>.md` and return the path plus a one-paragraph summary.
 
