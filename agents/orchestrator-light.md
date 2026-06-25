@@ -144,7 +144,15 @@ This project uses **per-feature git worktrees**. Before non-trivial work:
 1. **Decide if a worktree is needed** — yes if: touches multiple files, might be abandoned, >10 min, or needs tests/build without polluting current state. No for one-line fixes or read-only work.
 2. **Load the `worktree-workflow` skill** for naming/lifecycle/stack notes.
 3. **Create it FIRST**, before code, with a `git worktree add` command (type ∈ feature/fix/refactor/chore/spike/docs): `git worktree add ../<short-description> -b <type>/<short-description>`. opencode will prompt for approval (`git worktree add *` is `ask`).
-4. **Tell the user** which worktree/branch was created and its path. They can `cd` there or keep working — it's the same isolated directory. **Do NOT open a new terminal, new Ghostty window, or new OpenCode session. The user decides where to work.**
+4. **Hand off to the user.** Do two things:
+   - Run `/handoff` to generate a focused continuation prompt from this session. The handoff captures the feature goal, approved design, plan path, and relevant files so the new session starts with full context — not a blank slate.
+   - Present the worktree path, branch name, and the command to open the new session: `cd <path> && opencode`
+
+   **Do NOT open a new terminal, Ghostty window, or OpenCode session yourself. The user opens it.**
+   Your role in the main session ends here. Each worktree runs its own independent OpenCode session — implementation, review, and verification all happen there, not in this session. Sessions and worktrees are 1:1: when the branch is merged and the worktree deleted, that session ends too.
+
+   **`/handoff` is mandatory before every worktree session transfer.** Never send the user to a new session without it — a session that starts without context will re-explore what this session already knows, wasting Go budget.
+
 5. **When done**, ask how to finalize: merge / abandon / pause. To remove: `git worktree remove <path>` (also `ask`). **NEVER** remove a worktree without explicit confirmation.
 
 Note: the `brainstorming` skill creates the worktree after design approval, before planning. Coordinate — don't create two.
