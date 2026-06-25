@@ -21,13 +21,19 @@ permission:
     e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
   bash:
     "*": deny
+    "ghostty*": deny               # never spawn terminal windows
+    "xterm*": deny
+    "kitty*": deny
+    "wezterm*": deny
+    "tmux*": deny
+    "git worktree add*": deny      # worktrees created via user-approved ask at global level only
     "git status*": allow
     "git diff --stat*": allow
     "git log*": allow
     "ls*": allow
     "pwd": allow
-    "cat docs/plans/*": allow      # read its own coordination artifacts…
-    "cat docs/designs/*": allow    # …plans & designs only, never source code
+    "cat docs/plans/*": allow
+    "cat docs/designs/*": allow
 ---
 
 # Role
@@ -138,7 +144,7 @@ This project uses **per-feature git worktrees**. Before non-trivial work:
 1. **Decide if a worktree is needed** — yes if: touches multiple files, might be abandoned, >10 min, or needs tests/build without polluting current state. No for one-line fixes or read-only work.
 2. **Load the `worktree-workflow` skill** for naming/lifecycle/stack notes.
 3. **Create it FIRST**, before code, with a `git worktree add` command (type ∈ feature/fix/refactor/chore/spike/docs): `git worktree add ../<short-description> -b <type>/<short-description>`. opencode will prompt for approval (`git worktree add *` is `ask`).
-4. **Tell the user** which worktree/branch was created and its path. They can `cd` there or keep working — it's the same isolated directory.
+4. **Tell the user** which worktree/branch was created and its path. They can `cd` there or keep working — it's the same isolated directory. **Do NOT open a new terminal, new Ghostty window, or new OpenCode session. The user decides where to work.**
 5. **When done**, ask how to finalize: merge / abandon / pause. To remove: `git worktree remove <path>` (also `ask`). **NEVER** remove a worktree without explicit confirmation.
 
 Note: the `brainstorming` skill creates the worktree after design approval, before planning. Coordinate — don't create two.

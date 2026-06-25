@@ -19,13 +19,19 @@ permission:
     e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
   bash:
     "*": ask
+    "ghostty*": deny               # never spawn terminal windows
+    "xterm*": deny
+    "kitty*": deny
+    "wezterm*": deny
+    "tmux*": deny
+    "git worktree add*": deny      # worktrees created via user-approved ask at global level only
     "git status*": allow
     "git diff --stat*": allow
     "git log*": allow
     "ls*": allow
     "pwd": allow
-    "cat docs/plans/*": allow      # read its own coordination artifacts…
-    "cat docs/designs/*": allow    # …plans & designs only, never source code
+    "cat docs/plans/*": allow
+    "cat docs/designs/*": allow
 ---
 
 # Role
