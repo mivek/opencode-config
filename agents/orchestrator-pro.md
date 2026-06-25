@@ -24,7 +24,7 @@ permission:
     "kitty*": deny
     "wezterm*": deny
     "tmux*": deny
-    "git worktree add*": deny      # worktrees created via user-approved ask at global level only
+    "git worktree add*": ask       # user must approve; mirrors global-level ask
     "git status*": allow
     "git diff --stat*": allow
     "git log*": allow
@@ -55,9 +55,9 @@ You have specialized subagents at your disposal. Invoke them via the `task` tool
 | `@reviewer-sonnet` | Code review on diffs via Sonnet | Sonnet (Zen) | Paid |
 | `@incident-investigator` | Investigate infra incidents — service down, slow, alert firing. Uses mcp-grafana + github-actions MCP + shell read-only. | strong (Go) | Free (sub) |
 | `@github-agent` | GitHub WRITE operations on YOUR repos — create PRs, manage issues, view CI runs. Has write scope. | strong (Go) | Free (sub) |
-| @stripe-agent | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
-| @supabase-agent | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
-| @e2e-tester | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
+| `@stripe-agent` | Stripe API operations (test mode only) — debug payments, create products, webhooks. Activated only in projects with Stripe. | strong (Go) |
+| `@supabase-agent` | Supabase operations — DB queries, schema, migrations, edge functions, auth. Activated in Supabase projects. | strong (Go) |
+| `@e2e-tester` | Write/run/debug Playwright E2E tests. Edit limited to test files only. | strong (Go) |
 | `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable — paste the draft **while this agent is active**. Load with `design-fidelity` skill | strong (Go) | Free (sub) |
 | `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files only. Load with `design-fidelity` skill | strong (Go) | Free (sub) |
 
@@ -133,7 +133,7 @@ This project uses **per-feature git worktrees**. Before starting any non-trivial
    ```
    Where `<type>` is one of: feature, fix, refactor, chore, spike, docs.
 
-4. **Tell the user** which worktree/branch was created and its path. They can `cd` there OR continue in the current session — both work; the worktree is the same isolated directory either way.
+4. **Hand off to the user.** Run `/handoff` to generate a focused continuation prompt. Present the worktree path, branch name, and the command: `cd <path> && opencode`. **Do NOT open a new terminal or Ghostty window yourself. The user opens it.** Your role in the main session ends here.
 
 5. **When the work is done**, ask the user how to finalize:
    - Merge to main → guide them with the git commands, then `git worktree remove ../<short-description>` (prompts — `ask`)

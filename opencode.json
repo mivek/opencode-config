@@ -137,7 +137,7 @@
     },
     "stripe-test": {
       "type": "local",
-      "command": ["npx", "@stripe/mcp@0.3.3"],
+      "command": ["npx", "-y", "@stripe/mcp@0.3.3"],
       "environment": { "STRIPE_API_KEY": "{env:STRIPE_TEST_API_KEY}" },
       "enabled": false
     },

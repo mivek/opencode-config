@@ -19,9 +19,14 @@ permission:
     "**/*.golden": "allow"
     "docs/reports/**": "allow"
     "**": "deny"
+  write:
+    "**/test/**": "allow"
+    "test/**": "allow"
+    "docs/reports/**": "allow"
+    "**": "deny"
   bash:
-    "ls *": "allow"
-    "cat *": "allow"
+    "ls*": "allow"
+    "cat*": "allow"
     "flutter --version": "allow"
     "flutter analyze*": "allow"
     "flutter test*": "allow"

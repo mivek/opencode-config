@@ -13,8 +13,6 @@ tools:
   webfetch: false
   task: true
 permission:
-  read:
-    "*": deny            # hard block: never read files yourself, delegate to @explorer/@reviewer
   task:
     "*": allow          # explorer, researcher, planner, reviewer… run freely
     implementer: ask    # HARD GATE: stop for approval before any production-code write
@@ -26,7 +24,7 @@ permission:
     "kitty*": deny
     "wezterm*": deny
     "tmux*": deny
-    "git worktree add*": deny      # worktrees created via user-approved ask at global level only
+    "git worktree add*": ask       # user must approve; mirrors global-level ask
     "git status*": allow
     "git diff --stat*": allow
     "git log*": allow
@@ -60,10 +58,10 @@ Invoke subagents via the `task` tool.
 | `@stripe-agent` | Stripe API (test mode only). Activated in Stripe projects |
 | `@supabase-agent` | Supabase ops — DB, schema, migrations, auth. Activated in Supabase projects |
 | `@e2e-tester` | Write/run/debug Playwright E2E tests. Test files only |
-| `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable (Kimi native) — paste the draft **while this agent is active**. Load with `design-fidelity` skill |
+| `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable (Mimo v2.5 native) — paste the draft **while this agent is active**. Load with `design-fidelity` skill |
 | `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files and reports only, never app code. Load with `design-fidelity` skill |
 
-All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (kimi, glm-5.2, deepseek-pro) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
+All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (glm-5.2, deepseek-v4-pro, minimax-m3) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
 
 **Frontier subagents** (Anthropic billing, real money per token, only invoke when justified):
 - `@planner-opus` — Claude Opus planning. Use only for genuinely hard architecture, multi-system design, or when the Go-tier planner has already failed.

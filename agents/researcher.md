@@ -15,8 +15,6 @@ mcp:
 permission:
   edit: deny
   write: deny
-  bash:
-    "*": deny
   webfetch: allow
 ---
 

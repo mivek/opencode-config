@@ -15,6 +15,9 @@ permission:
   edit:
     "docs/designs/**": "allow"
     "**": "deny"
+  write:
+    "docs/designs/**": "allow"
+    "**": "deny"
 ---
 
 # Role
