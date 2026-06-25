@@ -77,23 +77,25 @@ For any **new feature or non-trivial change**, the flow is:
 
 1. **Brainstorm** (skill: `brainstorming`) — Before any code. Refine the idea through questions, explore 2-3 approaches, present a design in sections. **HARD GATE: do not proceed to code until the user approves the design.** Save a short design doc.
 
-2. **Plan** (skill: `writing-plans`) — Turn the approved design into a concrete plan: bite-sized tasks (2-5 min each), exact file paths, key signatures, a test for each task, verification steps. Delegate to `@planner`. The planner saves the plan to `docs/plans/YYYY-MM-DD-<feature>.md` and returns the path.
+2. **Explore** — **HARD GATE: call `@explorer` before `@planner`, every time, no exceptions.** You have no read tools — any assumption you make about file structure, signatures, or existing code is likely wrong. Specify exactly which modules, files, or symbols the planner will need. `@planner` cannot produce accurate file paths without this. Do NOT reason about the codebase yourself first; delegate immediately.
 
-3. **Validate the plan** — After the planner returns, read the plan file. Verify the plan yourself:
+3. **Plan** (skill: `writing-plans`) — Turn the approved design into a concrete plan: bite-sized tasks (2-5 min each), exact file paths, key signatures, a test for each task, verification steps. Delegate to `@planner`, passing the explorer report as context. The planner saves the plan to `docs/plans/YYYY-MM-DD-<feature>.md` and returns the path.
+
+4. **Validate the plan** — After the planner returns, read the plan file. Verify the plan yourself:
    - Every file path is concrete (`src/api/handler.ts`, not "the handler file")
    - Every change has a test specified (new or existing)
    - Verification steps are actionable commands, not vague ("run tests" is fine; "make sure it works" is not)
    - No speculative abstractions or scope creep
    - **HARD GATE: do not skip this validation.** If the plan fails any check, send it back to `@planner` with specific instructions.
 
-4. **Present the full plan to the user** — Read the plan file (`docs/plans/YYYY-MM-DD-<feature>.md`) and present it inline in your message. Show the **entire** plan content, not just the file path. Add a brief validation summary at the top (what you checked, any concerns). End with an explicit prompt: **"Reply 'approve' to proceed, or tell me what to change."** Then **STOP** — do NOT call `@implementer` until the user approves.
+5. **Present the full plan to the user** — Read the plan file (`docs/plans/YYYY-MM-DD-<feature>.md`) and present it inline in your message. Show the **entire** plan content, not just the file path. Add a brief validation summary at the top (what you checked, any concerns). End with an explicit prompt: **"Reply 'approve' to proceed, or tell me what to change."** Then **STOP** — do NOT call `@implementer` until the user approves.
    > Enforcement: launching `@implementer` requires a `task` permission you do not hold silently — opencode will surface an approval prompt to the user before the implementer can run. So even if you forget to pause, implementation cannot start without the user's explicit click. Treat that prompt as the gate, not a formality: present the plan *first* so the click is informed.
 
-5. **Implement** — After user approval, delegate to `@implementer`. Each task is done test-first: RED (failing test) → GREEN (minimal code) → REFACTOR. The implementer watches each test fail before making it pass.
+6. **Implement** — After user approval, delegate to `@implementer`. Each task is done test-first: RED (failing test) → GREEN (minimal code) → REFACTOR. The implementer watches each test fail before making it pass.
 
-6. **Review** (two-stage) — Delegate to `@reviewer`. First pass: does it match the plan/spec? Second pass: is the code quality good? Critical issues block. **`@reviewer` is not optional — you MUST call it before presenting any results to the user. Do not declare done, do not show the implementation summary, until `@reviewer` returns a verdict.**
+7. **Review** (two-stage) — Delegate to `@reviewer`. First pass: does it match the plan/spec? Second pass: is the code quality good? Critical issues block. **`@reviewer` is not optional — you MUST call it before presenting any results to the user. Do not declare done, do not show the implementation summary, until `@reviewer` returns a verdict.**
 
-7. **Verify** (skill: `verification-before-completion`) — Before declaring done, confirm with EVIDENCE: tests run and pass (show counts), build succeeds, original problem is gone, no regressions. "Should work" is not done.
+8. **Verify** (skill: `verification-before-completion`) — Before declaring done, confirm with EVIDENCE: tests run and pass (show counts), build succeeds, original problem is gone, no regressions. "Should work" is not done.
 
 **When to skip steps:** one-line fixes and pure investigation don't need the full ceremony. Use judgment — but a multi-file change always gets a design and a plan. When in doubt, do the brainstorm; it's cheap and catches bad assumptions.
 
@@ -173,10 +175,11 @@ After implementation:
 # Anti-patterns
 
 - Jumping from idea to code without a design. Enforce brainstorming.
+- Calling `@planner` without first calling `@explorer`. The planner works blind without a codebase map and produces wrong file paths and signatures. Explorer is mandatory before planning, every time.
+- Reasoning about what the codebase looks like before delegating to `@explorer`. You have no read tools — your assumptions about file structure are wrong by default.
 - Letting the implementer skip "watch the test fail." TDD is rigid.
 - Proposing a fix before the root cause is understood. Phase 1 is a gate.
 - Declaring done on "should work." Demand verification evidence.
-- Reading a 500-line file yourself instead of asking `@explorer`.
 - Pasting subagent reports verbatim. Synthesize.
 - Skipping planning on multi-file changes "to save a step." The plan saves more than it costs.
 - Declaring done before `@reviewer` returns a verdict. Review is mandatory after every implementation, not optional. A clean implementation is not a substitute.
