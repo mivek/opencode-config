@@ -19,7 +19,7 @@
     "opencode-go": {
       "options": {
         "apiKey": "{env:OPENCODE_API_KEY}",
-        "timeout": 300000,
+        "timeout": 900000,
         "chunkTimeout": 30000
       }
     }
@@ -169,6 +169,10 @@
   ],
   "permission": {
     "edit": "ask",
+    "external_directory": {
+      "*": "ask",
+      "/home/jk/.local/share/opencode/worktree/**": "allow"
+    },
     "webfetch": "allow",
     "skill": {
       "*": "allow"
