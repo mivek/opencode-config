@@ -171,7 +171,7 @@
     "edit": "ask",
     "external_directory": {
       "*": "ask",
-      "/home/jk/.local/share/opencode/worktree/**": "allow"
+      "{env:HOME}/.local/share/opencode/worktree/**": "allow"
     },
     "webfetch": "allow",
     "skill": {

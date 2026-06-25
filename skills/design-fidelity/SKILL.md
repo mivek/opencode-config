@@ -1,6 +1,6 @@
 ---
 name: design-fidelity
-description: Flutter UI fidelity workflow. Load when implementing screens from visual drafts. Screen image files live in assets/screens/ (or assets/designs/) in the repo — no manual image pasting needed. Implements screen-by-screen with an inline verify loop: spec → implement → verify → fix, then move to the next screen. Uses @design-interpreter (Kimi, native vision) to read draft files and produce specs, @implementer (deepseek-flash) to build, and @ui-verifier (Kimi, native vision) to compare renders vs draft files. Zero new dependencies — Kimi K2.6 is already in the config.
+description: Flutter UI fidelity workflow. Load when implementing screens from visual drafts. Screen image files live in assets/screens/ (or assets/designs/) in the repo — no manual image pasting needed. Implements screen-by-screen with an inline verify loop: spec → implement → verify → fix, then move to the next screen. Uses @design-interpreter (Mimo v2.5, native vision) to read draft files and produce specs, @implementer (deepseek-flash) to build, and @ui-verifier (Mimo v2.5, native vision) to compare renders vs draft files. Zero new dependencies — Mimo v2.5 is already in the config.
 compatibility: opencode
 metadata:
   workflow: design-fidelity
@@ -9,13 +9,13 @@ metadata:
 
 # Design-fidelity workflow — implement Flutter screens that match the drafts
 
-You have screen draft files in the repo (e.g. `assets/screens/login.png`) and need to build a Flutter UI that faithfully matches them. The coding agents (DeepSeek) cannot see images. This skill routes the two vision-boundary steps to **Kimi K2.6** (native vision), which reads the draft files directly from the repo — no manual image pasting needed.
+You have screen draft files in the repo (e.g. `assets/screens/login.png`) and need to build a Flutter UI that faithfully matches them. The coding agents (DeepSeek) cannot see images. This skill routes the two vision-boundary steps to **Mimo v2.5** (native vision), which reads the draft files directly from the repo — no manual image pasting needed.
 
 ```
 assets/screens/<screen>.png  (file in repo)
-  └─ @design-interpreter (Kimi, vision) → reads file → docs/designs/<screen>.spec.md + tokens.md
+  └─ @design-interpreter (Mimo v2.5, vision) → reads file → docs/designs/<screen>.spec.md + tokens.md
        └─ @implementer (DeepSeek, text) → ThemeData/tokens → screen widget from spec
-            └─ @ui-verifier (Kimi, vision) → reads file + rendered golden → diff → findings
+            └─ @ui-verifier (Mimo v2.5, vision) → reads file + rendered golden → diff → findings
                  └─ @implementer fixes → @ui-verifier re-checks → human sign-off → NEXT SCREEN
 ```
 
@@ -89,7 +89,7 @@ Once you sign off → move to the next screen in the queue.
 
 ## Image-reading mechanics
 
-`@design-interpreter` and `@ui-verifier` run on Kimi K2.6 (native vision). They read draft files from the repo using the `read` tool — the same way they read `.dart` or `.md` files, except the content is an image. **No manual image pasting is needed as long as the draft files are in `assets/screens/` (or `assets/designs/`).**
+`@design-interpreter` and `@ui-verifier` run on Mimo v2.5 (native vision). They read draft files from the repo using the `read` tool — the same way they read `.dart` or `.md` files, except the content is an image. **No manual image pasting is needed as long as the draft files are in `assets/screens/` (or `assets/designs/`).**
 
 If the `read` tool does not pass image bytes to the model in your opencode version (edge case — check by running `@design-interpreter` on a single file first), fall back to pasting the image while `@design-interpreter` or `@ui-verifier` is the active agent. Never paste to `@implementer` — it's text-only.
 

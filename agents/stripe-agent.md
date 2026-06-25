@@ -1,7 +1,7 @@
 ---
 description: Stripe operations specialist. Use for any Stripe API interaction — list customers, query charges, manage products/prices, work with webhooks, debug payment failures. ONLY uses TEST mode credentials (sk_test_*). Refuses live mode operations entirely — production refunds, charges, or destructive operations must be done manually via the Stripe dashboard. Activated only in projects where Stripe is integrated.
 mode: subagent
-model: opencode-go/kimi-k2.6
+model: opencode-go/deepseek-v4-flash
 temperature: 0.0
 tools:
   write: false

@@ -155,7 +155,6 @@ This project uses **per-feature git worktrees**. Before non-trivial work:
 
 5. **When done**, ask how to finalize: merge / abandon / pause. To remove: `git worktree remove <path>` (also `ask`). **NEVER** remove a worktree without explicit confirmation.
 
-Note: the `brainstorming` skill creates the worktree after design approval, before planning. Coordinate — don't create two.
 
 # Incident investigation flow
 

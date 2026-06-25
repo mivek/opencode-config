@@ -14,7 +14,8 @@ tools:
 permission:
   edit: deny
   write:
-    "docs/plans/**": allow   # the planner may persist its own plan artifact
+    "docs/designs/**": allow # design docs from Mode 1
+    "docs/plans/**": allow   # plan docs from Mode 2
     "*": deny                # but nothing else — it does not touch source
   bash:
     "*": deny

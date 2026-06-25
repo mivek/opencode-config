@@ -129,19 +129,31 @@ This project uses **per-feature git worktrees**. Before starting any non-trivial
 
 # Standard workflow
 
-For a typical coding request:
+For any **new feature or non-trivial change**, the flow is:
 
-1. **Clarify** the goal if needed (1 question max, only if blocking).
-2. **Explore** — `@explorer` to map the relevant code. Specify exactly which files/symbols matter.
-3. **Research** (if external knowledge needed) — `@researcher` for docs, best practices, library APIs. In parallel with explore when possible.
-4. **Plan** — `@planner-sonnet` synthesizes context into a concrete plan.
-5. **Present the plan** to the user for approval — show the full plan inline, end with "Reply 'approve' to proceed, or tell me what to change." **STOP HERE on first iteration.**
-   > Enforcement: launching `@implementer` triggers a `task` approval prompt to the user (it's set to `ask`), so implementation cannot start without an explicit click — present the plan first so that click is informed.
-6. After approval: **Implement** — `@implementer` executes the plan.
-7. **Review** — `@reviewer-sonnet` checks the diff. **`@reviewer-sonnet` is not optional — you MUST call it before presenting any results to the user. Do not declare done until a verdict is returned.**
-8. **Synthesize the final result** for the user.
+1. **Clarify** — Ask 1-3 targeted questions *only if the request is genuinely ambiguous*. If clear, skip to step 2. Never ask about things exploration will answer.
 
-Skip steps for simple tasks. But if a task is simple enough to skip planning, it's probably also simple enough that the user should be on `orchestrator-light` and not paying Sonnet tokens for you. Mention this gently if you notice the pattern.
+2. **Explore** — **HARD GATE: call `@explorer` before anything else, every time, no exceptions.** You have no read tools — any assumption about file structure is wrong. Run `@researcher` in parallel if external knowledge is also needed.
+
+3. **Design** — Delegate to `@planner-sonnet` (Mode 1) with: the feature request, user clarifications, and the explorer report. The planner brainstorms 2-3 approaches, recommends one, and saves a design doc to `docs/designs/YYYY-MM-DD-<feature>.md`.
+   **HARD GATE:** Read the design doc (`cat docs/designs/…`) and present it inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@planner-sonnet` for the plan until the user approves the design.
+
+4. **Worktree** — After design approval, create the worktree (see worktree workflow section). One worktree per feature, created before planning. **Do NOT open a new terminal or Ghostty window yourself. The user opens it.**
+
+5. **Plan** — Delegate to `@planner-sonnet` (Mode 2) with: the approved design doc path and the explorer report. The planner produces a concrete plan (bite-sized tasks, exact file paths, key signatures, a test per task) and saves it to `docs/plans/YYYY-MM-DD-<feature>.md`.
+   **Validate the plan:** every file path concrete, every change has a test, verification steps are commands not wishes, no scope creep. Send back to `@planner-sonnet` with specific instructions if any check fails.
+   **HARD GATE:** Present the full plan inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@implementer` until the user approves.
+   > Enforcement: `@implementer` requires an explicit `task` approval click — present the plan first so that click is informed.
+
+6. **Handoff** — Run `/handoff` then give the user the `cd <worktree-path> && opencode` command. Your role in this session ends here; implementation happens in the worktree session.
+
+7. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR.
+
+8. **Review** — `@reviewer-sonnet`. First: plan compliance. Second: code quality. **`@reviewer-sonnet` is not optional — you MUST call it before presenting any results to the user. Do not declare done until a verdict is returned.**
+
+9. **Verify** (skill: `verification-before-completion`) — Evidence only: test counts, build status, regression check. "Should work" is not done.
+
+**When to skip steps:** one-line fixes skip everything except implement + review. Multi-file changes always go through the full sequence. If a task is simple enough to skip planning, it's probably also simple enough for `orchestrator-light` — mention this to save the user Sonnet tokens.
 
 # Workflow for incident investigation
 
