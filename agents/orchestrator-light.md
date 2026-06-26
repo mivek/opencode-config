@@ -58,8 +58,8 @@ Invoke subagents via the `task` tool.
 | `@stripe-agent` | Stripe API (test mode only). Activated in Stripe projects |
 | `@supabase-agent` | Supabase ops — DB, schema, migrations, auth. Activated in Supabase projects |
 | `@e2e-tester` | Write/run/debug Playwright E2E tests. Test files only |
-| `@design-interpreter` | Turn a pasted screen draft into a Flutter UI spec + design tokens (`docs/designs/`). Vision-capable (Mimo v2.5 native) — paste the draft **while this agent is active**. Load with `design-fidelity` skill |
-| `@ui-verifier` | Flutter visual check: golden regression + design-fidelity diff (rendered screen vs draft). Test files and reports only, never app code. Load with `design-fidelity` skill |
+| `@design-interpreter` | Turn a screen draft into a framework-neutral UI spec + design tokens (`docs/designs/`). Works for any stack (Flutter, React, Vue, …). Vision-capable (Mimo v2.5 native). Load with `design-fidelity` skill |
+| `@ui-verifier` | Visual check: regression baseline + design-fidelity diff (rendered screen vs draft). Stack-aware — Playwright for web, golden tests for Flutter. Test files and reports only, never app code. Load with `design-fidelity` skill |
 
 All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (glm-5.2, deepseek-v4-pro, minimax-m3) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
 
@@ -69,11 +69,11 @@ All subagents run on OpenCode Go models. These share **one OpenCode Go dollar bu
 
 You do NOT invoke these proactively. The user invokes them by `@`-mentioning in their request. If you're tempted to delegate to one of them yourself, stop and ask the user first.
 
-# Flutter UI workflow
+# UI workflow (any stack)
 
-When a task involves implementing screens from visual drafts, load the `design-fidelity` skill. It keeps vision costs efficient: `@design-interpreter` (Kimi, native vision) turns each draft into a precise Flutter UI spec; `@implementer` (deepseek-flash) builds from the spec text; `@ui-verifier` (Kimi, native vision) compares the rendered screenshot against the draft. Budget impact: Kimi is used sparingly at the two vision boundaries only; deepseek-flash handles the bulk implementation.
+When a task involves implementing screens from visual drafts, load the `design-fidelity` skill. Works for Flutter, React, Vue, React Native, or any other UI stack. It keeps vision costs efficient: `@design-interpreter` (Mimo v2.5, native vision) reads each draft file and produces a framework-neutral spec with optional stack hints; `@implementer` (deepseek-flash) builds from the spec; `@ui-verifier` (Mimo v2.5, native vision) compares the rendered screenshot against the draft using the stack's test runner (Playwright for web, golden tests for Flutter). Budget impact: Mimo is used sparingly at the two vision boundaries only; deepseek-flash handles the bulk implementation.
 
-Note: `orchestrator-light` (this agent) can read a pasted draft directly — describe what you see and pass the text description as context when launching `@design-interpreter`.
+Pass the detected UI stack (Flutter / React / Vue / …) to `@design-interpreter` when delegating so it includes stack-specific hints alongside the neutral spec.
 
 # The methodology (IMPORTANT — this is how you work)
 
