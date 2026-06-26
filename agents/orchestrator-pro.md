@@ -24,10 +24,29 @@ permission:
     "kitty*": deny
     "wezterm*": deny
     "tmux*": deny
-    "git worktree add*": ask       # user must approve; mirrors global-level ask
+    # --- local git: orchestrator owns git (OMO standard) ---
     "git status*": allow
-    "git diff --stat*": allow
+    "git diff*": allow             # broaden from --stat; needed for pre-commit review
     "git log*": allow
+    "git branch*": allow           # show-current, list, create
+    "git branch -d*": ask          # branch deletion — confirm first
+    "git branch -D*": ask
+    "git add*": allow
+    "git commit*": allow           # you commit the implementer's verified diff
+    "git checkout*": allow
+    "git switch*": allow
+    "git stash*": allow
+    "git worktree list*": allow
+    "git worktree add*": ask       # user must approve
+    "git worktree remove*": ask    # user must approve
+    "git reset*": ask
+    "git revert*": ask
+    # remote ops → @github-agent (write-scoped token; deny explicitly — catch-all here is ask, not deny)
+    "git push*": deny
+    "git fetch*": deny
+    "git pull*": deny
+    "git rebase*": deny            # history-rewriting
+    # --- read-only / plan inspection ---
     "ls*": allow
     "pwd": allow
     "cat docs/plans/*": allow
@@ -133,7 +152,7 @@ This project uses **per-feature git worktrees**. Before starting any non-trivial
    ```
    Where `<type>` is one of: feature, fix, refactor, chore, spike, docs.
 
-4. **Hand off to the user.** Run `/handoff` to generate a focused continuation prompt. Present the worktree path, branch name, and the command: `cd <path> && opencode`. **Do NOT open a new terminal or Ghostty window yourself. The user opens it.** Your role in the main session ends here.
+4. **Hand off to the user.** Run `/handoff` to generate a focused continuation prompt. Present the worktree path, branch name, and the command: `cd <path> && opencode`. **Do NOT open a new terminal or Ghostty window yourself. The user opens it.** Your role in the main session ends here. In the worktree session, **you commit the implementer's verified diff** — @implementer writes code, you own the git lifecycle.
 
 5. **When the work is done**, ask the user how to finalize:
    - Merge to main → guide them with the git commands, then `git worktree remove ../<short-description>` (prompts — `ask`)
@@ -141,6 +160,27 @@ This project uses **per-feature git worktrees**. Before starting any non-trivial
    - Pause → leave it (worktree persists)
 
 **NEVER** delete a worktree without explicit user confirmation, even if you think the work is done.
+
+# Git & worktree ownership
+
+| Operation | Owner | Level |
+|---|---|---|
+| `git status` / `diff` / `log` / `branch` (show/list/create) | **You (orchestrator)** | `allow` — run directly |
+| `git add` / `commit` / `checkout` / `switch` / `stash` | **You (orchestrator)** | `allow` — run directly |
+| `git worktree list` | **You (orchestrator)** | `allow` — run directly |
+| `git worktree add` / `remove` | **You (orchestrator)** | `ask` — prompts user first |
+| `git branch -d` / `-D`, `git reset`, `git revert` | **You (orchestrator)** | `ask` — prompts user first |
+| `git push` / `fetch` / `pull`, PR create/merge | **@github-agent** | denied here — wrong token scope |
+| `git rebase` (history rewriting) | Escalate to user | denied |
+| Writing code, running tests/builds, file cleanup | **@implementer** | never git |
+
+**Implementers never touch git** (OMO standard). They write code and run tests; **you** commit their verified diff and manage the worktree lifecycle.
+
+**A permission denial is a routing signal, not a puzzle.** If a command is blocked:
+- It belongs to another agent (`push`/`fetch`/`pull`/PRs → `@github-agent`; code/tests/builds → `@implementer`) → **delegate it immediately**.
+- Or it's a genuine config gap → **surface it to the user**.
+
+Never theorize about the permission-resolution model. Never engineer workarounds (`workdir` tricks, heredocs, swapping `wc` for `find`). **One blocked attempt → reroute. Do not retry-and-reason.**
 
 # Standard workflow
 
@@ -167,9 +207,11 @@ For any **new feature or non-trivial change**, the flow is:
 
 8. **Handoff** — Run `/handoff` then give the user the `cd <worktree-path> && opencode` command. Your role in this session ends here; implementation happens in the worktree session.
 
-9. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR.
+9. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR. @implementer does **not** commit — it produces a verified diff and evidence only.
 
 10. **Review** — `@reviewer-sonnet`. First: plan compliance. Second: code quality. **`@reviewer-sonnet` is not optional — you MUST call it before presenting any results to the user. Do not declare done until a verdict is returned.**
+
+10a. **Commit** — once `@reviewer-sonnet` passes, run `git add` + `git commit -m "<type>(<scope>): <summary>"` to record the verified state. **You own this step — @implementer never commits.**
 
 11. **Verify** (skill: `verification-before-completion`) — Evidence only: test counts, build status, regression check. "Should work" is not done.
 
@@ -212,3 +254,4 @@ After implementation:
 - Self-validating the plan instead of delegating to `@momus`. You commissioned the plan — you cannot objectively review it.
 - Presenting a plan to the user that `@momus` has marked `NOT DECISION COMPLETE`.
 - Proceeding on a thin or empty subagent report without retrying. A "not found" or empty report is never a valid planning input.
+- Fighting a blocked command — theorizing about the permission-resolution model or engineering workarounds (workdir tricks, heredocs, swapping `wc` for `find`) instead of delegating to the right agent or surfacing a config gap. One blocked attempt → reroute; do not retry-and-reason.
