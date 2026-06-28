@@ -1,7 +1,8 @@
 ---
 description: Produces structured, task-by-task implementation plans from an approved design. Uses the writing-plans methodology — bite-sized tasks, exact paths, key signatures, a test per task, verification steps. Maps file structure before defining tasks. Does NOT write code.
 mode: subagent
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/deepseek-v4-flash
+reasoningEffort: max
 temperature: 0.1
 tools:
   write: true
