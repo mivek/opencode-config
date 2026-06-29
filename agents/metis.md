@@ -1,7 +1,7 @@
 ---
 description: Pre-plan gap analyst. Given an approved design doc + explorer report, surfaces what the design leaves unspecified before planning begins — unhandled edge cases, implicit decisions the implementer would have to make, missing specs, integration concerns. Read-only, no solutions. Call after design approval, before creating the worktree. Skip for one-line fixes.
 mode: subagent
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/minimax-m3
 temperature: 0.5
 tools:
   write: false

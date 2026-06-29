@@ -1,7 +1,7 @@
 ---
 description: Adversarial plan reviewer enforcing the "Decision Complete" standard. Receives the concrete plan + approved design doc and rejects any plan that leaves a decision to the implementer, has vague file references, missing test-first steps, or unrunnable verification commands. Returns DECISION COMPLETE or NOT DECISION COMPLETE with specific task-level findings. Read-only. Replaces orchestrator self-validation. Skip for one-line fixes.
 mode: subagent
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/mimo-v2.5-pro
 temperature: 0.1
 tools:
   write: false

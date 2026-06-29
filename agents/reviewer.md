@@ -1,7 +1,7 @@
 ---
 description: Code reviewer. Two-stage review — first spec/plan compliance, then code quality. Reads diffs, reports issues by severity, checks tests exist and test the right thing. Does NOT modify code. Use after implementation, before merging.
 mode: subagent
-model: opencode-go/glm-5.2
+model: opencode-go/qwen3.7-plus
 temperature: 0.1
 tools:
   write: false
