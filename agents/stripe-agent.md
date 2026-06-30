@@ -11,8 +11,7 @@ tools:
   grep: false
   glob: false
   webfetch: false
-mcp:
-  stripe-test: true
+  "stripe-test*": true
 permission:
   bash:
     "stripe listen*": "allow"

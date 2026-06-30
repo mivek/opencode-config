@@ -11,9 +11,8 @@ tools:
   grep: false
   glob: false
   webfetch: false
-mcp:
-  supabase-dev: true
-  supabase-test: true
+  "supabase-dev*": true
+  "supabase-test*": true
 permission:
   bash:
     "supabase status*": "allow"

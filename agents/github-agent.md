@@ -11,8 +11,7 @@ tools:
   grep: false
   glob: false
   webfetch: false
-mcp:
-  github-full: true
+  "github-full*": true
 permission:
   bash:
     "git fetch*": "allow"

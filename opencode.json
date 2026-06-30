@@ -25,6 +25,22 @@
     }
   },
   "lsp": true,
+  "tools": {
+    "context7*": false,
+    "github-research*": false,
+    "github-actions*": false,
+    "github-full*": false,
+    "grafana*": false,
+    "kubernetes*": false,
+    "playwright*": false,
+    "stripe-test*": false,
+    "supabase-dev*": false,
+    "supabase-test*": false,
+    "terraform*": false,
+    "sonarcloud*": false,
+    "stitch*": false,
+    "next-devtools*": false
+  },
   "mcp": {
     "grafana": {
       "type": "local",
@@ -68,7 +84,7 @@
       "headers": {
         "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
       },
-      "enabled": false
+      "enabled": true
     },
     "github-research": {
       "type": "remote",
@@ -79,7 +95,7 @@
         "X-MCP-Readonly": "true",
         "X-MCP-Lockdown": "true"
       },
-      "enabled": false
+      "enabled": true
     },
     "github-actions": {
       "type": "remote",
@@ -89,7 +105,7 @@
         "X-MCP-Toolsets": "context,actions,repos",
         "X-MCP-Readonly": "true"
       },
-      "enabled": false
+      "enabled": true
     },
     "github-full": {
       "type": "remote",
@@ -98,7 +114,7 @@
         "Authorization": "Bearer {env:GITHUB_PAT_WRITE}",
         "X-MCP-Toolsets": "context,repos,issues,pull_requests,actions,code_security"
       },
-      "enabled": false
+      "enabled": true
     },
     "stitch": {
       "type": "remote",

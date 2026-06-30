@@ -11,10 +11,9 @@ tools:
   grep: true
   glob: true
   webfetch: false
-mcp:
-  grafana: true
-  kubernetes: true
-  github-actions: true
+  "grafana*": true
+  "kubernetes*": true
+  "github-actions*": true
 permission:
   edit: deny
   write: deny

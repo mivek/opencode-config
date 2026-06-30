@@ -9,9 +9,8 @@ tools:
   bash: false
   read: false
   webfetch: true
-mcp:
-  github-research: true
-  context7: true
+  "github-research*": true
+  "context7*": true
 permission:
   edit: deny
   write: deny

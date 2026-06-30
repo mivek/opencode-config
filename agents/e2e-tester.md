@@ -11,8 +11,7 @@ tools:
   grep: true
   glob: true
   webfetch: false
-mcp:
-  playwright: true
+  "playwright*": true
 permission:
   edit:
     "**/*.spec.ts": "allow"
