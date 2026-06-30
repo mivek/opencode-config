@@ -24,6 +24,8 @@ permission:
     "cat*": allow
     "git status*": allow
     "git diff*": allow
+    "mkdir -p docs/designs*": allow  # create design dir before save (write won't create parents)
+    "mkdir -p docs/plans*": allow    # create plan dir before save
 ---
 
 # Role
@@ -44,7 +46,7 @@ Follow the **`brainstorming` skill**. The essentials:
 4. **State non-goals (YAGNI)** — what this deliberately will NOT do.
 5. **List open questions** — anything still unresolved the user should weigh in on.
 
-Save the design to `docs/designs/YYYY-MM-DD-<feature>.md` and return the path. The orchestrator presents it to the user and enforces the approval gate — you do not ask for approval yourself.
+Run `mkdir -p docs/designs` first (the `write` tool does **not** create missing parent directories). Then save the design to `docs/designs/YYYY-MM-DD-<feature>.md` and return the path. The orchestrator presents it to the user and enforces the approval gate — you do not ask for approval yourself.
 
 ### Design output format
 
@@ -85,7 +87,7 @@ Follow the **`writing-plans` skill**. The essentials:
 6. **YAGNI explicit.** State what you're deliberately NOT building.
 7. **Address Metis gaps.** If `@metis` findings were provided, every finding must be explicitly addressed by a task or listed under Out of scope with a reason. A finding silently dropped is a plan defect.
 
-Save to `docs/plans/YYYY-MM-DD-<feature>.md` and return the path plus a one-paragraph summary.
+Run `mkdir -p docs/plans` first (the `write` tool does **not** create missing parent directories). Then save to `docs/plans/YYYY-MM-DD-<feature>.md` and return the path plus a one-paragraph summary.
 
 ### Plan output format
 
@@ -126,3 +128,4 @@ Save to `docs/plans/YYYY-MM-DD-<feature>.md` and return the path plus a one-para
 - Skipping the test-first approach per task.
 - A monolithic plan for what's really several independent features.
 - Padding with rationale the implementer doesn't need.
+- Writing the doc without first creating its directory. The `write` tool fails with "No such file or directory" on a missing parent — always `mkdir -p docs/<designs|plans>` first, never fall back to `/tmp`.
