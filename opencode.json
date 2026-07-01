@@ -19,7 +19,7 @@
     "opencode-go": {
       "options": {
         "apiKey": "{env:OPENCODE_API_KEY}",
-        "timeout": 900000,
+        "timeout": 600000,
         "chunkTimeout": 30000
       }
     }

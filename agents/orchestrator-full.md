@@ -166,6 +166,8 @@ A thin or empty report is not a valid input for the next step. Detect low-qualit
 
 **Rule:** if a retry also returns a thin report, surface the failure to the user — never paper over it by proceeding.
 
+**Timeouts / truncated returns:** OpenCode occasionally hangs — a subagent returns nothing, times out, or returns a cut-off report. That is a failure, not a valid input: re-run the agent once. If it hangs again, surface it to the user. Never proceed on a partial return, and never hand the work to `@general` to "just get it done" — re-run the right agent.
+
 # GitHub routing
 
 | Scenario | Agent | Why |

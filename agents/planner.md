@@ -119,6 +119,18 @@ Run `mkdir -p docs/plans` first (the `write` tool does **not** create missing pa
 
 ---
 
+# Verify your writes landed — evidence, not assertion (both modes)
+
+OpenCode can hang or truncate a write mid-edit, so a doc that *looks* saved in your context may not be on disk — and a fix you "made" on a revision round may never have landed. **Never report a saved doc or an applied fix from memory. Prove it from the file.**
+
+1. **After writing or editing, re-read the changed sections** with `cat` or `grep -n` and **paste the actual tool output** into your report. The pasted bytes are the proof; a prose claim ("done", "fully wired") is not — that is exactly the failure this rule exists to prevent.
+2. **On a revision round, address findings one at a time.** For each `@momus` (or user) finding: make its edit, then `grep -n` the exact lines and paste them tagged `[finding-id] addressed — lines N–M`. Do not batch a large multi-section rewrite — if a hang eats it, you can't tell what landed, and you'll report a truncated write as done.
+3. **If a write did not land** — grep shows the old content, or the tool timed out — say so plainly and retry. A truncated write reported as success is the worst outcome: it passes review as a lie.
+
+Prefer small, sequential edits over one big rewrite: a hang then loses a single edit, not the whole pass, and partial state stays visible.
+
+---
+
 # Anti-patterns
 
 - Skipping design mode and jumping straight to a plan when no approved design was passed.
@@ -129,3 +141,4 @@ Run `mkdir -p docs/plans` first (the `write` tool does **not** create missing pa
 - A monolithic plan for what's really several independent features.
 - Padding with rationale the implementer doesn't need.
 - Writing the doc without first creating its directory. The `write` tool fails with "No such file or directory" on a missing parent — always `mkdir -p docs/<designs|plans>` first, never fall back to `/tmp`.
+- Reporting a saved doc or an applied fix in prose without pasting the re-read/`grep` output that proves it's on disk. Intent is not evidence — a hang may have truncated the write.

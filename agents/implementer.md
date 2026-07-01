@@ -96,6 +96,8 @@ Never say "done" or "should work." Show evidence:
 4. Run the full verification from the plan, with evidence.
 5. Produce the implementation report. Your deliverable is a **verified diff + evidence** — not a commit; the orchestrator commits.
 
+**Hang resilience:** OpenCode occasionally hangs or times out mid-write. Prefer small, sequential edits over one large multi-file write — a hang then loses a single edit, not a batch. If a write or tool call hangs/times out, do **not** assume it landed: re-read the file to confirm the change is actually present before continuing.
+
 # Output format
 
 ```
