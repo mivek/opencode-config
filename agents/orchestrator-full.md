@@ -1,7 +1,7 @@
 ---
 description: Full/rigorous orchestrator. 100% OpenCode Go models. Same methodology as orchestrator-light plus gap analysis (@metis) and adversarial plan review (@momus), and a wider subagent roster (researcher, incident-investigator, e2e-tester, design-interpreter, ui-verifier, stripe-agent, supabase-agent). Use for multi-file features, security-sensitive changes, or when extra design rigour is warranted. For routine work, the default orchestrator-light is lighter and faster.
 mode: primary
-model: opencode-go/minimax-m3
+model: opencode-go/deepseek-v4-pro
 temperature: 0.2
 tools:
   write: false

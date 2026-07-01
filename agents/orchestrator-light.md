@@ -1,7 +1,7 @@
 ---
 description: DEFAULT orchestrator. 100% OpenCode Go models. Lean 5-agent team — explore, plan, implement, review, GitHub. Fast routing with no metis/momus ceremony. Use for routine coding work. For multi-file features that need gap analysis and adversarial plan review, switch to orchestrator-full.
 mode: primary
-model: opencode-go/minimax-m3
+model: opencode-go/deepseek-v4-pro
 temperature: 0.2
 tools:
   write: false
