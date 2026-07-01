@@ -113,7 +113,7 @@ For any **new feature or non-trivial change**, the flow is:
    **HARD GATE:** Present the approved plan inline. End with: **"Reply 'approve' to proceed, or tell me what to change."** STOP — do not call `@implementer` until the user approves.
    > Enforcement: `@implementer` requires an explicit `task` approval click — present the plan first so the click is informed.
 
-8. **Handoff** — Run `/handoff` then give the user the `cd <worktree-path> && opencode` command. Your role in this session ends here; implementation happens in the worktree session.
+8. **Handoff** — Run `/handoff`, then **rewrite the draft** with the implementation-phase template (see worktree section) — the continuation session is *orchestrated*, not "the implementer." Give the user the `cd <worktree-path> && opencode` command and tell them to open it on **`orchestrator-light`** (the implementation lane needs no metis/momus). Your role in this session ends here; implementation happens in the worktree session.
 
 9. **Implement** (worktree session) — `@implementer` executes the plan test-first: RED → GREEN → REFACTOR. @implementer does **not** commit — it produces a verified diff and evidence only.
 
@@ -178,14 +178,32 @@ This project uses **per-feature git worktrees**. Before non-trivial work:
 1. **Decide if a worktree is needed** — yes if: touches multiple files, might be abandoned, >10 min, or needs tests/build without polluting current state. No for one-line fixes or read-only work.
 2. **Load the `worktree-workflow` skill** for naming/lifecycle/stack notes.
 3. **Create it FIRST**, before code, with a `git worktree add` command (type ∈ feature/fix/refactor/chore/spike/docs): `git worktree add ../<short-description> -b <type>/<short-description>`. opencode will prompt for approval (`git worktree add *` is `ask`).
-4. **Hand off to the user.** Do two things:
+4. **Hand off to the user.** Do three things:
    - Run `/handoff` to generate a focused continuation prompt from this session. The handoff captures the feature goal, approved design, plan path, and relevant files so the new session starts with full context — not a blank slate.
-   - Present the worktree path, branch name, and the command to open the new session: `cd <path> && opencode`
+   - **Rewrite the auto-generated draft** with the implementation-phase template below. `/handoff` summarizes *this* session, which talks about "the implementer" — shipped verbatim, the next session thinks it *is* the implementer and tries to read/write/cat files it has no tools for. The worktree session is **orchestrated**: `@implementer` is a `subagent` it delegates to, never the session's primary agent.
+   - Present the worktree path, branch name, and the command to open the new session: `cd <path> && opencode` — and tell the user to open it on **`orchestrator-light`** (metis/momus are done; the worktree lane is just implement → review → commit).
+
+   **Implementation-phase handoff template** (fill the `<…>` and use it as the draft):
+   ```
+   You are the **orchestrator** for the IMPLEMENTATION PHASE of <feature>, in git worktree
+   <path> (branch <branch>). Approved plan (source of truth): <plan path>.
+   Design (context): <design path>.
+
+   You have NO read/write/edit/grep tools. Never cat/read/write files yourself — a blocked
+   command is a routing signal, not a puzzle. Drive the phase by delegation only:
+     1. @implementer — execute the plan test-first (RED → GREEN → REFACTOR). Returns a
+        verified diff + evidence; it does NOT commit.
+     2. @reviewer — two-stage (spec/plan compliance, then code quality). Do not proceed on a
+        non-verdict.
+     3. Once review passes, YOU commit the verified diff (git add + git commit). @implementer
+        never touches git.
+     4. Report test counts, review verdict, and commit SHA. Defer any PR to @github-agent.
+   ```
 
    **Do NOT open a new terminal, Ghostty window, or OpenCode session yourself. The user opens it.**
    Your role in the main session ends here. Each worktree runs its own independent OpenCode session — implementation, review, and verification all happen there, not in this session. Sessions and worktrees are 1:1: when the branch is merged and the worktree deleted, that session ends too.
 
-   **`/handoff` is mandatory before every worktree session transfer.** Never send the user to a new session without it — a session that starts without context will re-explore what this session already knows, wasting Go budget.
+   **`/handoff` is mandatory before every worktree session transfer.** Never send the user to a new session without it — a session that starts without context will re-explore what this session already knows, wasting Go budget. And never ship the raw draft that frames the session as "the implementer."
 
 5. **When done**, ask how to finalize: merge / abandon / pause. To remove: `git worktree remove <path>` (also `ask`). **NEVER** remove a worktree without explicit confirmation.
 
@@ -255,3 +273,4 @@ After implementation:
 - Presenting a plan to the user that `@momus` has marked `NOT DECISION COMPLETE`.
 - Proceeding on a thin or empty subagent report without retrying. A "not found" or empty report is never a valid planning input.
 - Fighting a blocked command — theorizing about the permission-resolution model or engineering workarounds (workdir tricks, heredocs, swapping `wc` for `find`) instead of delegating to the right agent or surfacing a config gap. One blocked attempt → reroute; do not retry-and-reason.
+- Framing the worktree handoff as "you are the implementer." `@implementer` is a `subagent` — it can never be a session's primary agent. The worktree session is orchestrated and delegates to `@implementer`. Hand off with the implementation-phase template, not the raw `/handoff` draft.
