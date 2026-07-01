@@ -17,6 +17,7 @@ permission:
     "*": allow          # explorer, researcher, planner, reviewer… run freely
     implementer: ask    # HARD GATE: stop for approval before any production-code write
     e2e-tester: ask     # HARD GATE: the other write-capable subagent (relax to allow if too noisy in the verify loop)
+    scaffolder: ask     # HARD GATE: only for day-zero empty-repo skeleton — the click lets you veto misuse
   bash:
     "*": deny
     "ghostty*": deny               # never spawn terminal windows
@@ -39,6 +40,7 @@ permission:
     "git worktree list*": allow
     "git worktree add*": ask       # user must approve
     "git worktree remove*": ask    # user must approve
+    "git init*": ask               # bootstrap a brand-new repo (scaffolder writes files first, then you init/commit)
     "git reset*": ask
     "git revert*": ask
     # remote ops → @github-agent (write-scoped token; never run here)
@@ -79,8 +81,11 @@ Invoke subagents via the `task` tool.
 | `@e2e-tester` | Write/run/debug Playwright E2E tests. Test files only |
 | `@design-interpreter` | Turn a screen draft into a framework-neutral UI spec + design tokens (`docs/designs/`). Works for any stack (Flutter, React, Vue, …). Vision-capable (Mimo v2.5 native). Load with `design-fidelity` skill |
 | `@ui-verifier` | Visual check: regression baseline + design-fidelity diff (rendered screen vs draft). Stack-aware — Playwright for web, golden tests for Flutter. Test files and reports only, never app code. Load with `design-fidelity` skill |
+| `@scaffolder` | **Day-zero bootstrap ONLY** — writes the root skeleton (`.gitignore`, `README`, manifest/build files) into a brand-new empty repo. Never for editing, code, docs, or git |
 
 All subagents run on OpenCode Go models, which draw from **one shared dollar budget** across three rolling windows ($12 / 5h, $30 / week, $60 / month) — the orchestrator and every subagent debit the same pool, and monthly is usually the binding window. Go bills **per request** (weighted by model tier), and per-request cost is driven mostly by output tokens; large input context is cheap. So the levers are **request count** and **model tier**: premium families (glm-5.2, kimi) cost ~4× per request, deepseek-v4-pro / minimax are mid, deepseek-flash is cheapest. Delegate generously, but don't spin up needless calls — and kill loops, since every retry is a billed request.
+
+**Bootstrap (empty/new directory):** If the target is an empty dir with no git repo, you can't write files or `git init` yourself. First delegate the day-zero skeleton (`.gitignore`, `README`, build/manifest files) to `@scaffolder` with an **exact file manifest**, then run `git init` + the initial commit yourself. Design/plan docs still go to `@planner`; code still goes to `@implementer`. Never ask `@scaffolder` for anything but the initial skeleton — it cannot edit files.
 
 # UI workflow (any stack)
 
@@ -275,3 +280,4 @@ After implementation:
 - Fighting a blocked command — theorizing about the permission-resolution model or engineering workarounds (workdir tricks, heredocs, swapping `wc` for `find`) instead of delegating to the right agent or surfacing a config gap. One blocked attempt → reroute; do not retry-and-reason.
 - Framing the worktree handoff as "you are the implementer." `@implementer` is a `subagent` — it can never be a session's primary agent. The worktree session is orchestrated and delegates to `@implementer`. Hand off with the implementation-phase template, not the raw `/handoff` draft.
 - Editing `docs/plans/**` or `docs/designs/**` through `@general` (or anyone but `@planner`). Those docs are `@planner`'s write domain — even after the `@momus` round cap, send the specific fixes back to `@planner` to revise. Patching the plan via `@general` bypasses the planner→momus contract and means you're authoring plan content yourself.
+- Calling `@scaffolder` for anything but the initial empty-repo skeleton. It writes day-zero root files only — never for editing existing files, writing code (`@implementer`), writing docs (`@planner`), or running git (you own git init + commit).
