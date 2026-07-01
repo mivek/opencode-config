@@ -229,3 +229,4 @@ After implementation:
 - Proceeding on a thin or empty subagent report without retrying. A "not found" or empty report is never a valid planning input.
 - Fighting a blocked command — theorizing about the permission-resolution model or engineering workarounds instead of delegating to the right agent or surfacing a config gap. One blocked attempt → reroute; do not retry-and-reason.
 - Framing the worktree handoff as "you are the implementer." `@implementer` is a `subagent` — it can never be a session's primary agent. The worktree session is orchestrated and delegates to `@implementer`. Hand off with the implementation-phase template, not the raw `/handoff` draft.
+- Editing `docs/plans/**` or `docs/designs/**` through `@general` (or anyone but `@planner`). Those docs are `@planner`'s write domain — send the specific fixes back to `@planner` to revise. Patching the plan via `@general` bypasses the planner contract and means you're authoring plan content yourself.

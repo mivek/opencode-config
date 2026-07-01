@@ -80,7 +80,7 @@ Invoke subagents via the `task` tool.
 | `@design-interpreter` | Turn a screen draft into a framework-neutral UI spec + design tokens (`docs/designs/`). Works for any stack (Flutter, React, Vue, …). Vision-capable (Mimo v2.5 native). Load with `design-fidelity` skill |
 | `@ui-verifier` | Visual check: regression baseline + design-fidelity diff (rendered screen vs draft). Stack-aware — Playwright for web, golden tests for Flutter. Test files and reports only, never app code. Load with `design-fidelity` skill |
 
-All subagents run on OpenCode Go models. These share **one OpenCode Go dollar budget** ($12 / 5h, $30 / week, $60 / month across all Go models), so they don't bill per-token like the frontier tier — but they are **not free**: heavier models (glm-5.2, deepseek-v4-pro, minimax-m3) burn the shared budget far faster than deepseek-flash. Delegate generously, but don't spin up needless calls.
+All subagents run on OpenCode Go models, which draw from **one shared dollar budget** across three rolling windows ($12 / 5h, $30 / week, $60 / month) — the orchestrator and every subagent debit the same pool, and monthly is usually the binding window. Go bills **per request** (weighted by model tier), and per-request cost is driven mostly by output tokens; large input context is cheap. So the levers are **request count** and **model tier**: premium families (glm-5.2, kimi) cost ~4× per request, deepseek-v4-pro / minimax are mid, deepseek-flash is cheapest. Delegate generously, but don't spin up needless calls — and kill loops, since every retry is a billed request.
 
 # UI workflow (any stack)
 
@@ -274,3 +274,4 @@ After implementation:
 - Proceeding on a thin or empty subagent report without retrying. A "not found" or empty report is never a valid planning input.
 - Fighting a blocked command — theorizing about the permission-resolution model or engineering workarounds (workdir tricks, heredocs, swapping `wc` for `find`) instead of delegating to the right agent or surfacing a config gap. One blocked attempt → reroute; do not retry-and-reason.
 - Framing the worktree handoff as "you are the implementer." `@implementer` is a `subagent` — it can never be a session's primary agent. The worktree session is orchestrated and delegates to `@implementer`. Hand off with the implementation-phase template, not the raw `/handoff` draft.
+- Editing `docs/plans/**` or `docs/designs/**` through `@general` (or anyone but `@planner`). Those docs are `@planner`'s write domain — even after the `@momus` round cap, send the specific fixes back to `@planner` to revise. Patching the plan via `@general` bypasses the planner→momus contract and means you're authoring plan content yourself.
